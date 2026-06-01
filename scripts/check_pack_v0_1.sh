@@ -32,9 +32,11 @@ SCHEMA="schemas/receipt-envelope-v0.1.schema.json"
 SCHEMA_SHA="schemas/receipt-envelope-v0.1.sha256"
 VALID_FIXTURE="fixtures/valid/receipt-envelope-minimal-v0.1.json"
 INVALID_FIXTURE="fixtures/invalid/receipt-envelope-missing-body-v0.1.json"
+CD_FIXTURE="fixtures/valid/receipt-envelope-compression-disposition-v0.1.1.json"
 VALIDATOR="validator/validate_receipt_envelope_v0_1.py"
 VALID_EXPECTED="expected/valid-receipt-envelope-minimal-v0.1.txt"
 INVALID_EXPECTED="expected/invalid-receipt-envelope-missing-body-v0.1.txt"
+CD_EXPECTED="expected/valid-receipt-envelope-compression-disposition-v0.1.1.txt"
 
 # --- safe temporary workspace, cleaned up on any exit ----------------------
 
@@ -65,6 +67,9 @@ pass "valid fixture parses as JSON"
 
 python3 -m json.tool "$INVALID_FIXTURE" >/dev/null
 pass "invalid fixture parses as JSON"
+
+python3 -m json.tool "$CD_FIXTURE" >/dev/null
+pass "compression-disposition valid fixture parses as JSON"
 
 # --- 3. pinned schema digest matches --------------------------------------
 
@@ -98,6 +103,25 @@ if [ "$invalid_rc" -ne 1 ]; then
 fi
 diff -u "$INVALID_EXPECTED" "$invalid_out"
 pass "invalid fixture: exit 1 and output matches $INVALID_EXPECTED"
+
+# --- 6. compression-disposition valid fixture: validator passes ------------
+#
+# Additive v0.1.1 fixture (compression_disposition body_kind candidate). The
+# envelope is valid by construction; the body is opaque to the v0.1 schema, so
+# this check exercises envelope FORM only, exactly like the minimal fixture.
+# See docs/COMPRESSION_DISPOSITION_FIXTURE_V0_1_1.md for the shape divergences.
+
+cd_out="$TMPDIR_WORK/compression-disposition.out"
+set +e
+python3 "$VALIDATOR" "$CD_FIXTURE" >"$cd_out"
+cd_rc=$?
+set -e
+if [ "$cd_rc" -ne 0 ]; then
+    printf 'ERROR: validator exit %d on compression-disposition fixture (expected 0)\n' "$cd_rc" >&2
+    exit 1
+fi
+diff -u "$CD_EXPECTED" "$cd_out"
+pass "compression-disposition valid fixture: exit 0 and output matches $CD_EXPECTED"
 
 # --- summary ---------------------------------------------------------------
 

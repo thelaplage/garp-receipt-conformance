@@ -23,6 +23,18 @@ private repository. The `body` is intentionally kept opaque and empty so that no
 
 Both fixtures target the version marker `0.1` (see `SCHEMA_V0_1.md`).
 
+An additive v0.1.1-compatible valid fixture has since been added for the
+`compression_disposition` `body_kind` candidate:
+
+- `fixtures/valid/receipt-envelope-compression-disposition-v0.1.1.json` — a valid
+  envelope carrying an opaque compression-disposition body.
+
+It exercises the same envelope FORM, leaves the schema and its digest unchanged,
+and keeps the body opaque (no `body_kind`-specific schema). Its shape, the two
+divergences it documents (envelope wrapper placement and identifier-token
+convention), and why no body-content invalid fixture is derivable under v0.1 are
+described in `COMPRESSION_DISPOSITION_FIXTURE_V0_1_1.md`.
+
 2. Why the valid fixture is valid
 ---------------------------------
 
