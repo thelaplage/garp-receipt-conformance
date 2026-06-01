@@ -1,0 +1,2 @@
+PASS: receipt-envelope-minimal-v0.1.json
+envelope-form valid against receipt-envelope v0.1
