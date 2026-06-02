@@ -80,7 +80,11 @@ Envelope shape (required invariants)
   `audit_trail_boundary`, a **pack-local descriptive routing label**. It is
   **not** a newly-minted canonical `boundary_type`: the canonical `boundary_type`
   lane remains `arcs-srs`'s to define. The value only names how this receipt
-  routes.
+  routes. The canonical schema treats `boundary_type` as an **open string** (no
+  enum, no registry), so this value is **accepted** by the conformance pack
+  precisely because the field is open — it mints nothing canonical. `check.sh`
+  carries a posture guard that fails loudly if that open-string posture ever
+  changes. See `docs/BOUNDARY_TYPE_POSTURE.md` for the full ratification.
 - **GARP body content lives under `extensions.garp.body`**, named by `body_kind`
   (`mcp_audit_trail`). Hoisting any of it to the top level is rejected by the
   canonical validator (see `docs/BODY_KIND_EXTENSION_RULES.md`).

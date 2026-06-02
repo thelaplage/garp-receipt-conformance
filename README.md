@@ -66,8 +66,8 @@ Pack contents
   fixture.
 - `scripts/check_pack_v0_1.sh` — clean-checkout wrapper.
 - `docs/` — verifier documents: schema, body-kind extension rules, fixtures,
-  fixture provenance, pack structure, attestation limits, and the
-  no-private-corpus rule.
+  fixture provenance, pack structure, attestation limits, the boundary_type
+  posture, and the no-private-corpus rule.
 
 Run it from a clean checkout
 ----------------------------
