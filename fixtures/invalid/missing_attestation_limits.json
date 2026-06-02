@@ -1,0 +1,17 @@
+{
+  "_invalid_reason": "attestation_limits is required by the envelope schema but is absent",
+  "receipt_version": "srs.core.v5.1",
+  "receipt_id": "invalid-missing-attestation-limits-0001",
+  "receipt_type": "provenance",
+  "boundary_type": "provenance_boundary",
+  "protocol_binding": "arcs-srs",
+  "subject_ref": "fixture:missing-attestation-limits",
+  "issued_at": "2026-01-01T00:00:00Z",
+  "artifact_classes_covered": [
+    "provenance"
+  ],
+  "artifact_classes_excluded": [
+    "truth_verification"
+  ],
+  "extensions": {}
+}

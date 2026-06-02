@@ -1,11 +1,20 @@
 #!/usr/bin/env bash
 #
-# check_pack_v0_1.sh — Stage C5 clean-checkout verification for the GARP/SRS
-# receipt envelope conformance pack v0.1.
+# check_pack_v0_1.sh — clean-checkout verification for the GARP/SRS receipt
+# envelope conformance pack.
 #
-# Runs the full public pack end-to-end from a clean checkout using only the
-# Python 3 standard library and stock POSIX tooling. No network access, no
-# dependency install, no private corpus, no private repositories.
+# This pack is a faithful, digest-pinned vendoring of the canonical ARCS SRS
+# envelope schema, manifest, and validator from arcs-srs, plus the canonical
+# conformance fixtures. It validates ARCS SRS *envelope* form only; it does not
+# bless GARP body-kind semantics. See README.md and docs/ for what this does and
+# does not establish.
+#
+# Runs end-to-end from a clean checkout using only the Python 3 standard library
+# and stock POSIX tooling. No network access, no dependency install, no private
+# corpus, no private repositories.
+#
+# Pack version marker: v0.1. Vendored schema version: v0.1.0. Receipt version
+# carried by canonical receipts: srs.core.v5.1. These three are distinct.
 #
 # Usage (from the repository root):
 #   bash scripts/check_pack_v0_1.sh
@@ -13,8 +22,6 @@
 # Exit status:
 #   0  all checks passed
 #   non-zero  the first failing check aborted the run (fail-fast)
-#
-# See docs/CLEAN_CHECKOUT_V0_1.md for what this does and does not establish.
 
 set -eu
 
@@ -28,15 +35,14 @@ if [ "$(pwd -P)" != "$REPO_ROOT" ]; then
     exit 2
 fi
 
-SCHEMA="schemas/receipt-envelope-v0.1.schema.json"
-SCHEMA_SHA="schemas/receipt-envelope-v0.1.sha256"
-VALID_FIXTURE="fixtures/valid/receipt-envelope-minimal-v0.1.json"
-INVALID_FIXTURE="fixtures/invalid/receipt-envelope-missing-body-v0.1.json"
-CD_FIXTURE="fixtures/valid/receipt-envelope-compression-disposition-v0.1.1.json"
-VALIDATOR="validator/validate_receipt_envelope_v0_1.py"
-VALID_EXPECTED="expected/valid-receipt-envelope-minimal-v0.1.txt"
-INVALID_EXPECTED="expected/invalid-receipt-envelope-missing-body-v0.1.txt"
-CD_EXPECTED="expected/valid-receipt-envelope-compression-disposition-v0.1.1.txt"
+SCHEMA="schemas/srs-envelope/v0.1.0/srs-envelope.schema.json"
+MANIFEST="schemas/srs-envelope/v0.1.0/srs-envelope.schema.manifest.json"
+SCHEMA_SHA="schemas/srs-envelope/v0.1.0/srs-envelope.schema.sha256"
+VALIDATOR="tools/validate_srs_envelope.py"
+VALID_DIR="fixtures/valid"
+INVALID_DIR="fixtures/invalid"
+EXPECTED_VALID_DIR="expected/valid"
+EXPECTED_INVALID_DIR="expected/invalid"
 
 # --- safe temporary workspace, cleaned up on any exit ----------------------
 
@@ -62,66 +68,60 @@ pass "git diff --check (no whitespace/conflict damage)"
 python3 -m json.tool "$SCHEMA" >/dev/null
 pass "schema parses as JSON"
 
-python3 -m json.tool "$VALID_FIXTURE" >/dev/null
-pass "valid fixture parses as JSON"
+python3 -m json.tool "$MANIFEST" >/dev/null
+pass "schema manifest parses as JSON"
 
-python3 -m json.tool "$INVALID_FIXTURE" >/dev/null
-pass "invalid fixture parses as JSON"
+python3 -m json.tool "schemas/srs-envelope/v0.1.0/PROVENANCE.json" >/dev/null
+pass "schema provenance parses as JSON"
 
-python3 -m json.tool "$CD_FIXTURE" >/dev/null
-pass "compression-disposition valid fixture parses as JSON"
+python3 -m json.tool "fixtures/PROVENANCE.json" >/dev/null
+pass "fixture provenance parses as JSON"
+
+for fixture in "$VALID_DIR"/*.json "$INVALID_DIR"/*.json; do
+    python3 -m json.tool "$fixture" >/dev/null
+done
+pass "all fixtures parse as JSON"
 
 # --- 3. pinned schema digest matches --------------------------------------
 
 shasum -c "$SCHEMA_SHA" >/dev/null
 pass "schema digest matches $SCHEMA_SHA"
 
-# --- 4. valid fixture: validator passes and output matches expected --------
+# --- 4. valid fixtures: validator passes (exit 0) and output matches -------
 
-valid_out="$TMPDIR_WORK/valid.out"
-set +e
-python3 "$VALIDATOR" "$VALID_FIXTURE" >"$valid_out"
-valid_rc=$?
-set -e
-if [ "$valid_rc" -ne 0 ]; then
-    printf 'ERROR: validator exit %d on valid fixture (expected 0)\n' "$valid_rc" >&2
-    exit 1
-fi
-diff -u "$VALID_EXPECTED" "$valid_out"
-pass "valid fixture: exit 0 and output matches $VALID_EXPECTED"
+for fixture in "$VALID_DIR"/*.json; do
+    base=$(basename "$fixture" .json)
+    expected="$EXPECTED_VALID_DIR/$base.txt"
+    out="$TMPDIR_WORK/valid-$base.out"
+    set +e
+    python3 "$VALIDATOR" "$fixture" >"$out"
+    rc=$?
+    set -e
+    if [ "$rc" -ne 0 ]; then
+        printf 'ERROR: validator exit %d on valid fixture %s (expected 0)\n' "$rc" "$fixture" >&2
+        exit 1
+    fi
+    diff -u "$expected" "$out"
+    pass "valid fixture $base: exit 0 and output matches $expected"
+done
 
-# --- 5. invalid fixture: validator fails (exit 1) and output matches -------
+# --- 5. invalid fixtures: validator fails (exit 1) and output matches ------
 
-invalid_out="$TMPDIR_WORK/invalid.out"
-set +e
-python3 "$VALIDATOR" "$INVALID_FIXTURE" >"$invalid_out"
-invalid_rc=$?
-set -e
-if [ "$invalid_rc" -ne 1 ]; then
-    printf 'ERROR: validator exit %d on invalid fixture (expected 1)\n' "$invalid_rc" >&2
-    exit 1
-fi
-diff -u "$INVALID_EXPECTED" "$invalid_out"
-pass "invalid fixture: exit 1 and output matches $INVALID_EXPECTED"
-
-# --- 6. compression-disposition valid fixture: validator passes ------------
-#
-# Additive v0.1.1 fixture (compression_disposition body_kind candidate). The
-# envelope is valid by construction; the body is opaque to the v0.1 schema, so
-# this check exercises envelope FORM only, exactly like the minimal fixture.
-# See docs/COMPRESSION_DISPOSITION_FIXTURE_V0_1_1.md for the shape divergences.
-
-cd_out="$TMPDIR_WORK/compression-disposition.out"
-set +e
-python3 "$VALIDATOR" "$CD_FIXTURE" >"$cd_out"
-cd_rc=$?
-set -e
-if [ "$cd_rc" -ne 0 ]; then
-    printf 'ERROR: validator exit %d on compression-disposition fixture (expected 0)\n' "$cd_rc" >&2
-    exit 1
-fi
-diff -u "$CD_EXPECTED" "$cd_out"
-pass "compression-disposition valid fixture: exit 0 and output matches $CD_EXPECTED"
+for fixture in "$INVALID_DIR"/*.json; do
+    base=$(basename "$fixture" .json)
+    expected="$EXPECTED_INVALID_DIR/$base.txt"
+    out="$TMPDIR_WORK/invalid-$base.out"
+    set +e
+    python3 "$VALIDATOR" "$fixture" >"$out"
+    rc=$?
+    set -e
+    if [ "$rc" -ne 1 ]; then
+        printf 'ERROR: validator exit %d on invalid fixture %s (expected 1)\n' "$rc" "$fixture" >&2
+        exit 1
+    fi
+    diff -u "$expected" "$out"
+    pass "invalid fixture $base: exit 1 and output matches $expected"
+done
 
 # --- summary ---------------------------------------------------------------
 

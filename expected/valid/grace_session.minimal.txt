@@ -1,0 +1,2 @@
+schema sha256 verified == manifest sha256: e866eabf1cef537df6dc98f56f74021d8af585c94dc689f9fdd4ee97618d6b61
+PASS  fixtures/valid/grace_session.minimal.json  Valid SRS envelope 0.1.0.

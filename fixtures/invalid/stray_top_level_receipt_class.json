@@ -1,0 +1,21 @@
+{
+  "_invalid_reason": "stray top-level 'receipt_class' is not an envelope field",
+  "receipt_version": "srs.core.v5.1",
+  "receipt_id": "invalid-receipt-class-0001",
+  "receipt_type": "provenance",
+  "receipt_class": "compression_disposition",
+  "boundary_type": "provenance_boundary",
+  "protocol_binding": "arcs-srs",
+  "subject_ref": "fixture:stray-receipt-class",
+  "issued_at": "2026-01-01T00:00:00Z",
+  "artifact_classes_covered": [
+    "provenance"
+  ],
+  "artifact_classes_excluded": [
+    "truth_verification"
+  ],
+  "attestation_limits": [
+    "this receipt attests envelope shape only, not body truth"
+  ],
+  "extensions": {}
+}

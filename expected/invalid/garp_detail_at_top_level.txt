@@ -1,0 +1,4 @@
+schema sha256 verified == manifest sha256: e866eabf1cef537df6dc98f56f74021d8af585c94dc689f9fdd4ee97618d6b61
+FAIL  fixtures/invalid/garp_detail_at_top_level.json  Invalid SRS envelope.
+        [GARP_DETAIL_AT_TOP_LEVEL] GARP body detail 'body_kind' must live under extensions.garp.body, not at the top level
+        [GARP_DETAIL_AT_TOP_LEVEL] GARP body detail 'retained_claims' must live under extensions.garp.body, not at the top level
