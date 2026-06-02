@@ -95,8 +95,16 @@ truth.
   MCP (Model Context Protocol) custody-gateway audit-trail input, a minimal
   deterministic adapter that builds an SRS envelope receipt from it, and the
   conformance fixtures. It preserves Option A / `decision_ref` and introduces no
-  vendor profile. A Bedrock-specific pack remains deferred until this neutral
-  pack proves the shape. Run: `bash packs/mcp-audit-trail/v0.1/check.sh`.
+  vendor profile. It is the neutral pack that proves the shape. Run:
+  `bash packs/mcp-audit-trail/v0.1/check.sh`.
+- `packs/bedrock-openai-audit/v0.1/` — the first **vendor-specific** pack. It
+  **instantiates the neutral shape above** (same canonical schema, same envelope
+  invariants, same Option A / `decision_ref` discipline, same `boundary_type`
+  routing value) using an explicit, public-safe, **synthetic** Bedrock/OpenAI
+  model-invocation custody/audit input. It is **not** a live integration: no AWS,
+  OpenAI, or Bedrock API is called, no credentials or env vars are read, and it
+  makes no claim about any model output (verifies none). Run:
+  `bash packs/bedrock-openai-audit/v0.1/check.sh`.
 
 Repository roles
 ----------------

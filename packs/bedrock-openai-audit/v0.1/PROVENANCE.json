@@ -1,0 +1,80 @@
+{
+  "note": "Provenance for the Bedrock/OpenAI custody/audit pack. This pack INSTANTIATES the vendor-neutral pack shape proven by packs/mcp-audit-trail/v0.1/: it reuses the same canonical SRS envelope schema, the same envelope invariants, the same Option A / decision_ref discipline, the same boundary_type routing value, and the same deterministic adapter shape; it does not invent a new receipt or conformance shape. The artifacts here are authored in this repository: a public-safe, SYNTHETIC, vendor-specific Bedrock/OpenAI model-invocation custody/audit input and the SRS envelope receipt deterministically built from it. They are not copied from any private corpus or external repository.",
+  "pack": "packs/bedrock-openai-audit/v0.1",
+  "instantiates": {
+    "neutral_pack": "packs/mcp-audit-trail/v0.1",
+    "shape_reused": [
+      "canonical SRS envelope schema (no re-vendor, no edit)",
+      "no top-level receipt_class",
+      "receipt_type as the family axis (provenance)",
+      "boundary_type as the top-level routing axis (audit_trail_boundary, pack-local descriptive)",
+      "GARP body under extensions.garp.body, named by body_kind",
+      "Option A / decision_ref discipline",
+      "deterministic file-in/file-out adapter, stdlib only"
+    ],
+    "differs_only_in": "the explicit, vendor-shaped input (a Bedrock/OpenAI model-invocation custody/audit trail) and its body_kind name"
+  },
+  "authored_in_repo": true,
+  "not_a_live_integration": {
+    "live_aws": false,
+    "live_openai": false,
+    "bedrock_api_calls": false,
+    "credentials_used": false,
+    "env_vars_used": false,
+    "network_calls": false,
+    "note": "No AWS, OpenAI, or Bedrock API was called. No account, ARN, region, endpoint, organization, or credential identifier appears. Provider model references are synthetic placeholders (model-family-a / model-family-b), not real model IDs. Prompts and model outputs are recorded digest-only; raw prompts and raw model outputs are never carried. No model output is verified and no claim is made about the content, correctness, or truth of any model output."
+  },
+  "public_safety": {
+    "private_corpus_used": false,
+    "live_credentials_used": false,
+    "network_calls": false,
+    "scanner_used": false,
+    "vendor_profile": "bedrock-openai (explicit-file synthetic only; no live profile)",
+    "synthetic": true,
+    "explicit_file_input_only": true
+  },
+  "validates_against": {
+    "schema": "schemas/srs-envelope/v0.1.0/srs-envelope.schema.json",
+    "schema_sha256": "e866eabf1cef537df6dc98f56f74021d8af585c94dc689f9fdd4ee97618d6b61",
+    "validator": "tools/validate_srs_envelope.py",
+    "note": "The canonical SRS envelope schema and validator are the artifacts already vendored/reconciled in this repo; this pack does not re-vendor or edit them."
+  },
+  "boundary_type": {
+    "value": "audit_trail_boundary",
+    "status": "pack-local descriptive routing label, reused verbatim from packs/mcp-audit-trail/v0.1/",
+    "canonical": false,
+    "note": "Not a newly-minted canonical boundary_type. The canonical boundary_type lane remains arcs-srs's to define. This custody/audit trail routes the same way the neutral audit trail does, so it carries the same descriptive value rather than introducing a new one."
+  },
+  "artifacts": [
+    {
+      "artifact": "input/bedrock_openai_audit.input.json",
+      "role": "explicit public-safe synthetic Bedrock/OpenAI custody/audit input",
+      "authored": true,
+      "sha256": "422c3bc36b45afca12712eb743191566eb198d8776bd4089c065f221f2c2d4ad"
+    },
+    {
+      "artifact": "fixtures/valid/bedrock_openai_audit.envelope.json",
+      "role": "generated/expected valid SRS envelope receipt",
+      "generated_by": "tools/build_receipt.py",
+      "generated_from": "input/bedrock_openai_audit.input.json",
+      "deterministic": true,
+      "sha256": "5250e6738f237fc7fcdc22ffb207d9fdca7aa88e6661f410c13c9f6301ce63c9"
+    },
+    {
+      "artifact": "fixtures/invalid/top_level_status_verdict.json",
+      "role": "forbidden-drift fixture (hoists a decision as a top-level verdict instead of using extensions.garp.body.decision_ref); same drift class as the neutral pack",
+      "authored": true,
+      "rejected_by_canonical_validator": "TOP_LEVEL_BODY_VERDICT",
+      "sha256": "bf662666779397b1eb27cbdc15a361df6d7718be3f29d6a22a19644d0d448384"
+    }
+  ],
+  "option_a": {
+    "preserved": true,
+    "decision_ref_only": true,
+    "recorded_by": [
+      "garp-ops PR #87 (R0/R1 Option A)",
+      "garp-sdk PR #78 (admission receipt contract conformed to Option A / decision_ref)"
+    ],
+    "rule": "Any decision/verdict semantics reference extensions.garp.body.decision_ref; never a body-level or top-level verdict/status/disposition/decision/governance_state."
+  }
+}

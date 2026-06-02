@@ -1,0 +1,82 @@
+{
+  "_invalid_reason": "top-level 'status' asserts the gateway decision as a verdict on the envelope; under Option A (garp-ops PR #87 / garp-sdk PR #78) a decision is referenced via extensions.garp.body.decision_ref, never asserted as a body-level or top-level verdict/status/disposition/decision/governance_state. This is the same forbidden-drift class as packs/mcp-audit-trail/v0.1/fixtures/invalid/top_level_status_verdict.json; the vendor-specific pack inherits the identical guardrail.",
+  "artifact_classes_covered": [
+    "trace",
+    "packet_inspection",
+    "provenance"
+  ],
+  "artifact_classes_excluded": [
+    "truth_verification",
+    "model_output_verification",
+    "automated_citation_detection",
+    "external_fact_checking"
+  ],
+  "attestation_limits": [
+    "this receipt attests SRS envelope shape and input-byte integrity only",
+    "it does not assert that any recorded audit event is true",
+    "it does not assert that any model invocation was authorized or any custody claim correct",
+    "it makes no claim about the content, correctness, or truth of any model output, and verifies no model output",
+    "this is not a live integration: no AWS, OpenAI, or Bedrock API was called",
+    "any decision is referenced via decision_ref, not asserted as a verdict"
+  ],
+  "boundary_type": "audit_trail_boundary",
+  "extensions": {
+    "garp": {
+      "body": {
+        "artifact_hashes": {
+          "input/bedrock_openai_audit.input.json": "sha256:422c3bc36b45afca12712eb743191566eb198d8776bd4089c065f221f2c2d4ad"
+        },
+        "body_kind": "bedrock_openai_custody_audit",
+        "decision_ref": "policy-eval://model-invocation-gateway/model-invocation-session-public-sample-0001#decision-0011",
+        "event_count": 4,
+        "events": [
+          {
+            "custody": "gateway_mediated",
+            "kind": "invocation_request",
+            "model_ref": "bedrock:model-family-a",
+            "prompt_digest": "sha256:1d2acbf9d6f4a0a4b8e9c0d11e2f3a4b5c6d7e8f90112233445566778899aabb",
+            "provider": "bedrock",
+            "seq": 1
+          },
+          {
+            "custody": "gateway_mediated",
+            "kind": "invocation_response",
+            "model_ref": "bedrock:model-family-a",
+            "output_digest": "sha256:22a1b2c3d4e5f60718293a4b5c6d7e8f9001122334455667788990aabbccddee",
+            "provider": "bedrock",
+            "seq": 2
+          },
+          {
+            "custody": "gateway_mediated",
+            "kind": "invocation_request",
+            "model_ref": "openai:model-family-b",
+            "prompt_digest": "sha256:33b2c3d4e5f6071829304a5b6c7d8e9f0011223344556677889900aabbccddff",
+            "provider": "openai",
+            "seq": 3
+          },
+          {
+            "custody": "gateway_mediated",
+            "kind": "invocation_response",
+            "model_ref": "openai:model-family-b",
+            "output_digest": "sha256:44c3d4e5f60718293041a5b6c7d8e9fa00112233445566778899aabbccddeeff",
+            "provider": "openai",
+            "seq": 4
+          }
+        ],
+        "gateway_ref": "model-invocation-gateway",
+        "providers": [
+          "bedrock",
+          "openai"
+        ],
+        "session_ref": "model-invocation-session-public-sample-0001"
+      }
+    }
+  },
+  "issued_at": "2026-06-01T00:00:00Z",
+  "protocol_binding": "garp",
+  "receipt_id": "bedrock-openai-audit-invalid-top-level-status",
+  "receipt_type": "provenance",
+  "receipt_version": "srs.core.v5.1",
+  "status": "admitted",
+  "subject_ref": "model-invocation-session-public-sample-0001"
+}

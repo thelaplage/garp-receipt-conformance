@@ -1,0 +1,129 @@
+#!/usr/bin/env bash
+#
+# check.sh — conformance check for the Bedrock/OpenAI custody/audit pack.
+#
+# This pack INSTANTIATES the vendor-neutral pack shape proven by
+# packs/mcp-audit-trail/v0.1/. It is vendor-specific (Bedrock/OpenAI) but still
+# explicit-file-only: it takes one explicit, public-safe, SYNTHETIC Bedrock/OpenAI
+# model-invocation custody/audit input file, builds an ARCS SRS *envelope* receipt
+# from it with the pack's minimal adapter, and proves:
+#
+#   1. the receipt regenerates byte-identically from the input (deterministic
+#      adapter, no wall clock, no randomness),
+#   2. the receipt cryptographically binds the exact input bytes (the sha256 in
+#      extensions.garp.body.artifact_hashes matches the input file),
+#   3. the receipt validates against the canonical SRS envelope schema already
+#      vendored in this repo (envelope form only), and
+#   4. a forbidden-drift fixture is rejected by that same canonical validator.
+#
+# It validates STRUCTURAL and CRYPTOGRAPHIC integrity only. It does NOT assert
+# that any recorded audit event is true, that any model invocation was
+# authorized, that any custody claim is correct, or anything about the content,
+# correctness, or truth of any model output. This is NOT a live integration:
+# no AWS, no OpenAI, no Bedrock API, no credentials, no network. See README.md.
+#
+# No network, no live credentials, no scanner, no private corpus. Python 3
+# standard library and stock POSIX tooling only.
+#
+# Usage (from the repository root):
+#   bash packs/bedrock-openai-audit/v0.1/check.sh
+#
+# Exit status: 0 all checks passed; non-zero the first failing check aborted.
+
+set -eu
+
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+REPO_ROOT=$(CDPATH= cd -- "$SCRIPT_DIR/../../.." && pwd)
+
+if [ "$(pwd -P)" != "$REPO_ROOT" ]; then
+    printf 'ERROR: run this script from the repository root: %s\n' "$REPO_ROOT" >&2
+    exit 2
+fi
+
+PACK="packs/bedrock-openai-audit/v0.1"
+VALIDATOR="tools/validate_srs_envelope.py"
+INPUT="$PACK/input/bedrock_openai_audit.input.json"
+ADAPTER="$PACK/tools/build_receipt.py"
+VALID="$PACK/fixtures/valid/bedrock_openai_audit.envelope.json"
+INVALID="$PACK/fixtures/invalid/top_level_status_verdict.json"
+EXPECTED_VALID="$PACK/expected/valid/bedrock_openai_audit.envelope.txt"
+EXPECTED_INVALID="$PACK/expected/invalid/top_level_status_verdict.txt"
+
+TMPDIR_WORK=$(mktemp -d "${TMPDIR:-/tmp}/check_bedrock_openai_audit.XXXXXX")
+cleanup() {
+    rm -rf "$TMPDIR_WORK"
+}
+trap cleanup EXIT INT TERM
+
+step=0
+pass() {
+    step=$((step + 1))
+    printf 'ok %d - %s\n' "$step" "$1"
+}
+
+# --- 1. no unstaged whitespace/conflict damage -----------------------------
+
+git diff --check
+pass "git diff --check (no whitespace/conflict damage)"
+
+# --- 2. all pack JSON artifacts parse --------------------------------------
+
+for artifact in "$INPUT" "$VALID" "$INVALID" "$PACK/PROVENANCE.json"; do
+    python3 -m json.tool "$artifact" >/dev/null
+done
+pass "input, fixtures, and provenance parse as JSON"
+
+# --- 3. receipt regenerates byte-identically from the input ----------------
+
+REGEN="$TMPDIR_WORK/regenerated.envelope.json"
+python3 "$ADAPTER" "$INPUT" --out "$REGEN"
+diff -u "$VALID" "$REGEN"
+pass "adapter regenerates the valid receipt byte-identically from the input"
+
+# --- 4. receipt cryptographically binds the exact input bytes --------------
+
+python3 - "$INPUT" "$VALID" <<'PY'
+import hashlib, json, sys
+input_path, receipt_path = sys.argv[1], sys.argv[2]
+actual = "sha256:" + hashlib.sha256(open(input_path, "rb").read()).hexdigest()
+receipt = json.load(open(receipt_path))
+recorded = receipt["extensions"]["garp"]["body"]["artifact_hashes"][
+    "input/bedrock_openai_audit.input.json"
+]
+if actual != recorded:
+    sys.stderr.write(f"input digest {actual} != recorded {recorded}\n")
+    sys.exit(1)
+PY
+pass "receipt artifact_hashes matches the sha256 of the input bytes"
+
+# --- 5. valid receipt: validator passes (exit 0) and output matches --------
+
+out="$TMPDIR_WORK/valid.out"
+set +e
+python3 "$VALIDATOR" "$VALID" >"$out"
+rc=$?
+set -e
+if [ "$rc" -ne 0 ]; then
+    printf 'ERROR: validator exit %d on valid fixture (expected 0)\n' "$rc" >&2
+    exit 1
+fi
+diff -u "$EXPECTED_VALID" "$out"
+pass "valid receipt: exit 0 and output matches $EXPECTED_VALID"
+
+# --- 6. invalid drift fixture: validator fails (exit 1) and output matches --
+
+out="$TMPDIR_WORK/invalid.out"
+set +e
+python3 "$VALIDATOR" "$INVALID" >"$out"
+rc=$?
+set -e
+if [ "$rc" -ne 1 ]; then
+    printf 'ERROR: validator exit %d on invalid fixture (expected 1)\n' "$rc" >&2
+    exit 1
+fi
+diff -u "$EXPECTED_INVALID" "$out"
+pass "invalid drift fixture: exit 1 and output matches $EXPECTED_INVALID"
+
+# --- summary ---------------------------------------------------------------
+
+printf 'PASS: Bedrock/OpenAI custody/audit pack v0.1 (%d checks)\n' "$step"
