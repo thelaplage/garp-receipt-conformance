@@ -1,0 +1,75 @@
+Bedrock/OpenAI explicit-file pack — portable standalone verifier
+================================================================
+
+Arc: explicit input bytes -> receipt artifact -> standalone verifier
+     -> this report. Offline; stdlib only; no garp-local checkout, no
+     install, no network, no credentials, no service access.
+
+Checks:
+  [PASS] receipt parses as JSON
+         ok
+  [PASS] schema bytes match manifest pinned sha256
+         sha256 e866eabf1cef537df6dc98f56f74021d8af585c94dc689f9fdd4ee97618d6b61
+  [PASS] schema/envelope invariants hold
+         valid SRS envelope 0.1.0
+  [PASS] receipt_type / body_kind route expectations hold
+         receipt_type='provenance' (expected 'provenance'), body_kind='bedrock_openai_custody_audit' (expected 'bedrock_openai_custody_audit'); boundary_type='audit_trail_boundary' is NOT routed on
+  [PASS] artifact_hashes input sha256 matches explicit input bytes
+         input/bedrock_openai_audit.input.json sha256:422c3bc36b45afca12712eb743191566eb198d8776bd4089c065f221f2c2d4ad
+  [PASS] rendered plain-language reading matches expected (byte-for-byte)
+         matches expected reading
+
+Result: VERIFIED
+
+Verification is STRUCTURAL + CRYPTOGRAPHIC only.
+This verifier does NOT claim:
+  - truth of any recorded event
+  - admission
+  - compliance certification
+  - live AWS / OpenAI / Bedrock integration (no API was called)
+  - model-output verification (no model output is verified)
+  - production authorization
+
+boundary_type is descriptive only: the verifier does NOT route on it.
+Route authority is receipt_type / body_kind / schema invariants. The
+open-string boundary_type values are recorded in docs/BOUNDARY_TYPE_LEDGER.md.
+
+----------------------------------------------------------------
+
+SRS envelope receipt — plain-language reading
+=============================================
+
+Envelope:
+  receipt_id        bedrock-openai-audit-422c3bc36b45afca
+  receipt_type      provenance
+  receipt_version   srs.core.v5.1
+  protocol_binding  garp
+  subject_ref       model-invocation-session-public-sample-0001
+  issued_at         2026-06-01T00:00:00Z
+  boundary_type     audit_trail_boundary  (descriptive context only; not a routing authority)
+
+GARP body (extensions.garp.body):
+  body_kind         bedrock_openai_custody_audit
+  gateway_ref       model-invocation-gateway
+  session_ref       model-invocation-session-public-sample-0001
+  providers         bedrock, openai
+  event_count       4
+  decision_ref      policy-eval://model-invocation-gateway/model-invocation-session-public-sample-0001#decision-0011
+                    (Option A reference; not a verdict)
+
+Recorded model-invocation custody events (digest-only):
+  seq 1  invocation_request   bedrock  bedrock:model-family-a   gateway_mediated prompt sha256:1d2acbf9d6f4a0a4b8e9c0d11e2f3a4b5c6d7e8f90112233445566778899aabb
+  seq 2  invocation_response  bedrock  bedrock:model-family-a   gateway_mediated output sha256:22a1b2c3d4e5f60718293a4b5c6d7e8f9001122334455667788990aabbccddee
+  seq 3  invocation_request   openai   openai:model-family-b    gateway_mediated prompt sha256:33b2c3d4e5f6071829304a5b6c7d8e9f0011223344556677889900aabbccddff
+  seq 4  invocation_response  openai   openai:model-family-b    gateway_mediated output sha256:44c3d4e5f60718293041a5b6c7d8e9fa00112233445566778899aabbccddeeff
+
+Input-byte binding (extensions.garp.body.artifact_hashes):
+  input/bedrock_openai_audit.input.json  sha256:422c3bc36b45afca12712eb743191566eb198d8776bd4089c065f221f2c2d4ad
+
+Attestation limits (carried inside the receipt):
+  - this receipt attests SRS envelope shape and input-byte integrity only
+  - it does not assert that any recorded audit event is true
+  - it does not assert that any model invocation was authorized or any custody claim correct
+  - it makes no claim about the content, correctness, or truth of any model output, and verifies no model output
+  - this is not a live integration: no AWS, OpenAI, or Bedrock API was called
+  - any decision is referenced via decision_ref, not asserted as a verdict

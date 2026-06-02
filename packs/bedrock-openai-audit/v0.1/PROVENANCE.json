@@ -68,6 +68,40 @@
       "sha256": "bf662666779397b1eb27cbdc15a361df6d7718be3f29d6a22a19644d0d448384"
     }
   ],
+  "standalone_verifier_arc": {
+    "artifact": "tools/verify_standalone.py",
+    "claim": "A prospect can run the verifier offline from the receipt bytes, the explicit input bytes, this single stdlib-only script, and the schema assets already in this repo: no garp-local checkout, no install, no network, no credentials, no env vars, no API calls, no scanner, no service access.",
+    "stdlib_only": true,
+    "imports_product_code": false,
+    "checks": [
+      "receipt parses",
+      "canonical schema bytes match the manifest's pinned sha256",
+      "schema/envelope invariants hold (same checks as tools/validate_srs_envelope.py)",
+      "receipt_type/body_kind route expectations hold",
+      "artifact_hashes input sha256 matches the explicit input bytes",
+      "rendered plain-language reading matches the expected reading byte-for-byte",
+      "the top-level status/verdict drift fixture fails"
+    ],
+    "non_divergence": {
+      "vendored_from": "tools/validate_srs_envelope.py",
+      "guard": "tools/test_verify_standalone.py runs both the standalone verifier and the canonical validator over the valid and invalid fixtures and fails if their envelope verdicts disagree; there is no second divergent verifier.",
+      "note": "Envelope-validation logic is vendored into the single portable artifact so it ships self-contained; the parity test holds it aligned with the canonical validator."
+    },
+    "verification_scope": "structural + cryptographic only",
+    "does_not_claim": [
+      "truth",
+      "admission",
+      "compliance certification",
+      "live AWS/OpenAI/Bedrock integration",
+      "model-output verification",
+      "production authorization"
+    ],
+    "boundary_type_routing": "The standalone verifier does NOT route on boundary_type; route authority remains receipt_type/body_kind/schema invariants. docs/BOUNDARY_TYPE_LEDGER.md remains the ledger for open-string values.",
+    "deterministic_outputs": [
+      "expected/valid/bedrock_openai_audit.reading.txt",
+      "expected/valid/standalone_report.txt"
+    ]
+  },
   "option_a": {
     "preserved": true,
     "decision_ref_only": true,

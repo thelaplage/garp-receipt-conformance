@@ -28,8 +28,12 @@ already vendored/reconciled in this repo.
 ```
 input/bedrock_openai_audit.input.json              explicit public-safe synthetic Bedrock/OpenAI custody/audit input
 tools/build_receipt.py                             minimal deterministic input -> receipt adapter
+tools/verify_standalone.py                         portable standalone verifier (single stdlib-only artifact)
+tools/test_verify_standalone.py                    parity + guard test (standalone vs canonical validator)
 fixtures/valid/bedrock_openai_audit.envelope.json  generated/expected valid SRS envelope receipt
 fixtures/invalid/top_level_status_verdict.json     forbidden-drift fixture (rejected)
+expected/valid/bedrock_openai_audit.reading.txt    expected plain-language reading (byte-for-byte target)
+expected/valid/standalone_report.txt               expected deterministic standalone-verifier report
 expected/valid/   expected/invalid/                byte-for-byte expected validator output
 PROVENANCE.json                                    authorship + public-safety + Option A record
 check.sh                                           the pack conformance check
@@ -45,7 +49,60 @@ The check regenerates the receipt from the input (deterministic, byte-identical)
 verifies the receipt cryptographically binds the input bytes, validates the
 receipt against the canonical SRS envelope schema (exit 0, output matches
 `expected/valid/`), and confirms the forbidden-drift fixture is rejected by that
-same canonical validator (exit 1, output matches `expected/invalid/`).
+same canonical validator (exit 1, output matches `expected/invalid/`). It then
+runs the **portable standalone verifier arc** described next.
+
+Portable standalone verifier (the prospect-runnable arc)
+--------------------------------------------------------
+
+The pack ships a single, self-contained verifier — `tools/verify_standalone.py`
+— that completes the arc a prospect cares about:
+
+```
+explicit input bytes  ->  receipt artifact  ->  standalone verifier  ->  deterministic report
+```
+
+The claim it proves is **portability**: a prospect can run it **offline** from
+the receipt bytes, the explicit input bytes, this one script, and the schema
+assets already in this repo — **with no garp-local checkout, no install, no
+network, no credentials, no env vars, no API calls, no scanner, and no service
+access**. It is **stdlib-only** and imports no `garp_core` / `garp_sdk` /
+`arcs_amnesiac` (or any product or network) code.
+
+Exact prospect command (run from the repository root):
+
+```
+python3 packs/bedrock-openai-audit/v0.1/tools/verify_standalone.py \
+  --receipt  packs/bedrock-openai-audit/v0.1/fixtures/valid/bedrock_openai_audit.envelope.json \
+  --input    packs/bedrock-openai-audit/v0.1/input/bedrock_openai_audit.input.json \
+  --schema   schemas/srs-envelope/v0.1.0/srs-envelope.schema.json \
+  --manifest schemas/srs-envelope/v0.1.0/srs-envelope.schema.manifest.json
+```
+
+With no arguments the verifier resolves all four paths relative to its own
+location, so `python3 .../tools/verify_standalone.py` alone works from anywhere.
+It exits `0` and prints the deterministic operator report
+(`expected/valid/standalone_report.txt`) when verification succeeds, and exits
+`1` on the drift fixture.
+
+The verifier asserts, in order: (1) the receipt parses; (2) the canonical
+schema's bytes match the manifest's pinned sha256; (3) the schema/envelope
+invariants hold (the **same** envelope checks the canonical in-repo validator
+`tools/validate_srs_envelope.py` applies — vendored into the single artifact and
+held aligned by `tools/test_verify_standalone.py`, so there is **no second
+divergent verifier**); (4) the `receipt_type` / `body_kind` route expectations
+hold; (5) `extensions.garp.body.artifact_hashes` records the sha256 of the exact
+explicit input bytes; and (6) the rendered plain-language reading matches
+`expected/valid/bedrock_openai_audit.reading.txt` **byte-for-byte**. The drift
+fixture fails at step 3, exactly as under the canonical validator.
+
+The report states plainly that verification is **structural + cryptographic
+only**, and explicitly does **not** claim truth, admission, compliance
+certification, live AWS/OpenAI/Bedrock integration, model-output verification, or
+production authorization. `boundary_type` stays descriptive: the verifier does
+**not** route on it — route authority is `receipt_type` / `body_kind` / schema
+invariants — and `docs/BOUNDARY_TYPE_LEDGER.md` remains the ledger for the
+open-string values.
 
 What it proves — and what it does not
 -------------------------------------

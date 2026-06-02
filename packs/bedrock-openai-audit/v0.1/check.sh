@@ -48,6 +48,10 @@ VALID="$PACK/fixtures/valid/bedrock_openai_audit.envelope.json"
 INVALID="$PACK/fixtures/invalid/top_level_status_verdict.json"
 EXPECTED_VALID="$PACK/expected/valid/bedrock_openai_audit.envelope.txt"
 EXPECTED_INVALID="$PACK/expected/invalid/top_level_status_verdict.txt"
+STANDALONE="$PACK/tools/verify_standalone.py"
+STANDALONE_TEST="$PACK/tools/test_verify_standalone.py"
+EXPECTED_REPORT="$PACK/expected/valid/standalone_report.txt"
+EXPECTED_READING="$PACK/expected/valid/bedrock_openai_audit.reading.txt"
 
 TMPDIR_WORK=$(mktemp -d "${TMPDIR:-/tmp}/check_bedrock_openai_audit.XXXXXX")
 cleanup() {
@@ -123,6 +127,64 @@ if [ "$rc" -ne 1 ]; then
 fi
 diff -u "$EXPECTED_INVALID" "$out"
 pass "invalid drift fixture: exit 1 and output matches $EXPECTED_INVALID"
+
+# --- 7. portable standalone verifier arc -----------------------------------
+#
+# Prove the prospect-runnable arc: explicit input bytes -> receipt artifact ->
+# standalone verifier -> deterministic report. The standalone verifier is a
+# single stdlib-only artifact: no garp-local checkout, no install, no network,
+# no credentials, no service access. We assert it imports no product/network
+# code, that the valid receipt verifies (exit 0) with a byte-for-byte report,
+# and that the drift fixture fails (exit 1).
+
+# 7a. standalone verifier is stdlib-only (no product/network imports).
+if grep -Eq '^[[:space:]]*(from[[:space:]]+(garp_core|garp_sdk|arcs_amnesiac|requests|urllib|http|socket|boto3|openai)|import[[:space:]]+(garp_core|garp_sdk|arcs_amnesiac|requests|urllib|http|socket|boto3|openai))' "$STANDALONE"; then
+    printf 'ERROR: standalone verifier imports forbidden product/network module\n' >&2
+    exit 1
+fi
+pass "standalone verifier imports no product/network module (stdlib only)"
+
+# 7b. valid receipt: standalone verifier exits 0 and report matches byte-for-byte.
+out="$TMPDIR_WORK/standalone.valid.out"
+set +e
+python3 "$STANDALONE" \
+    --receipt "$VALID" \
+    --input "$INPUT" \
+    --schema "schemas/srs-envelope/v0.1.0/srs-envelope.schema.json" \
+    --manifest "schemas/srs-envelope/v0.1.0/srs-envelope.schema.manifest.json" \
+    --reading "$EXPECTED_READING" >"$out"
+rc=$?
+set -e
+if [ "$rc" -ne 0 ]; then
+    printf 'ERROR: standalone verifier exit %d on valid receipt (expected 0)\n' "$rc" >&2
+    exit 1
+fi
+diff -u "$EXPECTED_REPORT" "$out"
+pass "standalone verifier: valid receipt exit 0 and report matches $EXPECTED_REPORT"
+
+# 7c. drift fixture: standalone verifier exits 1 (fails verification).
+out="$TMPDIR_WORK/standalone.invalid.out"
+set +e
+python3 "$STANDALONE" \
+    --receipt "$INVALID" \
+    --input "$INPUT" \
+    --schema "schemas/srs-envelope/v0.1.0/srs-envelope.schema.json" \
+    --manifest "schemas/srs-envelope/v0.1.0/srs-envelope.schema.manifest.json" \
+    --no-reading-check >"$out"
+rc=$?
+set -e
+if [ "$rc" -ne 1 ]; then
+    printf 'ERROR: standalone verifier exit %d on drift fixture (expected 1)\n' "$rc" >&2
+    exit 1
+fi
+pass "standalone verifier: drift fixture fails (exit 1)"
+
+# --- 8. parity + guard test ------------------------------------------------
+#
+# Prove the standalone verifier's vendored envelope checks stay aligned with the
+# canonical in-repo validator (no second divergent verifier).
+python3 "$STANDALONE_TEST"
+pass "standalone verifier parity + guard test passes"
 
 # --- summary ---------------------------------------------------------------
 
