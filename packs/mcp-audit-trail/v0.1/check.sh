@@ -121,6 +121,41 @@ fi
 diff -u "$EXPECTED_INVALID" "$out"
 pass "invalid drift fixture: exit 1 and output matches $EXPECTED_INVALID"
 
+# --- 7. boundary_type posture guard ----------------------------------------
+#
+# Ratifies the boundary_type posture (see docs/BOUNDARY_TYPE_POSTURE.md): the
+# canonical schema treats boundary_type as an OPEN STRING (no enum, no
+# registry), so audit_trail_boundary is accepted as a *pack-local descriptive*
+# routing label and is NOT a minted canonical value. This guard fails loudly if
+# the open-string posture ever changes (e.g. arcs-srs closes boundary_type into
+# an enum), forcing a conscious decision instead of silent drift.
+
+SCHEMA="schemas/srs-envelope/v0.1.0/srs-envelope.schema.json"
+python3 - "$SCHEMA" "$VALID" <<'PY'
+import json, sys
+schema_path, receipt_path = sys.argv[1], sys.argv[2]
+schema = json.load(open(schema_path))
+bt = schema.get("properties", {}).get("boundary_type", {})
+# Posture holds only while boundary_type is an open string with no enum.
+if bt.get("type") != "string" or "enum" in bt:
+    sys.stderr.write(
+        "boundary_type posture changed: canonical schema no longer treats "
+        f"boundary_type as an open string (got {bt!r}). audit_trail_boundary "
+        "must now be ratified upstream into the enum or replaced with an "
+        "already-governed value. See docs/BOUNDARY_TYPE_POSTURE.md.\n"
+    )
+    sys.exit(1)
+# This pack does NOT mint a canonical value; it carries the pack-local label.
+receipt = json.load(open(receipt_path))
+if receipt.get("boundary_type") != "audit_trail_boundary":
+    sys.stderr.write(
+        "expected pack-local descriptive boundary_type 'audit_trail_boundary', "
+        f"got {receipt.get('boundary_type')!r}\n"
+    )
+    sys.exit(1)
+PY
+pass "boundary_type posture: open-string schema; audit_trail_boundary is pack-local descriptive, not canonical"
+
 # --- summary ---------------------------------------------------------------
 
 printf 'PASS: vendor-neutral MCP audit-trail pack v0.1 (%d checks)\n' "$step"
