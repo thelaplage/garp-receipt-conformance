@@ -1,0 +1,42 @@
+{
+  "audit_schema": "bedrock-openai.custody-audit/v0",
+  "gateway": "model-invocation-gateway",
+  "session_ref": "model-invocation-session-public-sample-0001",
+  "recorded_at": "2026-06-01T00:00:00Z",
+  "decision_ref": "policy-eval://model-invocation-gateway/model-invocation-session-public-sample-0001#decision-0011",
+  "note": "Public-safe, SYNTHETIC Bedrock/OpenAI model-invocation custody/audit trail. It records that requests and responses passed through a custody gateway when calling two providers (Amazon Bedrock and OpenAI). It is NOT a live integration: no AWS or OpenAI API was called, no account, ARN, region, endpoint, organization, or credential identifier appears, and provider model references are synthetic placeholders (model-family-a / model-family-b), not real model IDs. Prompts and model outputs are recorded digest-only; raw prompts and raw model outputs are never carried, which is what makes the trail public-safe. The receipt built from this file binds it by sha256 and asserts SRS envelope form only. It makes no claim about the content, correctness, or truth of any model output, and verifies no model output.",
+  "events": [
+    {
+      "seq": 1,
+      "kind": "invocation_request",
+      "provider": "bedrock",
+      "model_ref": "bedrock:model-family-a",
+      "custody": "gateway_mediated",
+      "prompt_digest": "sha256:1d2acbf9d6f4a0a4b8e9c0d11e2f3a4b5c6d7e8f90112233445566778899aabb"
+    },
+    {
+      "seq": 2,
+      "kind": "invocation_response",
+      "provider": "bedrock",
+      "model_ref": "bedrock:model-family-a",
+      "custody": "gateway_mediated",
+      "output_digest": "sha256:22a1b2c3d4e5f60718293a4b5c6d7e8f9001122334455667788990aabbccddee"
+    },
+    {
+      "seq": 3,
+      "kind": "invocation_request",
+      "provider": "openai",
+      "model_ref": "openai:model-family-b",
+      "custody": "gateway_mediated",
+      "prompt_digest": "sha256:33b2c3d4e5f6071829304a5b6c7d8e9f0011223344556677889900aabbccddff"
+    },
+    {
+      "seq": 4,
+      "kind": "invocation_response",
+      "provider": "openai",
+      "model_ref": "openai:model-family-b",
+      "custody": "gateway_mediated",
+      "output_digest": "sha256:44c3d4e5f60718293041a5b6c7d8e9fa00112233445566778899aabbccddeeff"
+    }
+  ]
+}
