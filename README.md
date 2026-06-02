@@ -82,6 +82,22 @@ artifact, checks the pinned schema digest with `shasum -c`, validates each valid
 fixture (exit 0, output matching `expected/valid/`), and confirms each invalid
 fixture is rejected (exit 1, output matching `expected/invalid/`).
 
+Packs built on this envelope
+----------------------------
+
+Beyond the vendored envelope pack above, `packs/` holds receipt-bearing packs
+that build receipts from explicit, public-safe input and validate them against
+the canonical schema vendored here. Each pack is self-contained, carries its own
+`check.sh`, and proves **structural and cryptographic integrity only** — never
+truth.
+
+- `packs/mcp-audit-trail/v0.1/` — the first **vendor-neutral** pack: a public-safe
+  MCP (Model Context Protocol) custody-gateway audit-trail input, a minimal
+  deterministic adapter that builds an SRS envelope receipt from it, and the
+  conformance fixtures. It preserves Option A / `decision_ref` and introduces no
+  vendor profile. A Bedrock-specific pack remains deferred until this neutral
+  pack proves the shape. Run: `bash packs/mcp-audit-trail/v0.1/check.sh`.
+
 Repository roles
 ----------------
 
