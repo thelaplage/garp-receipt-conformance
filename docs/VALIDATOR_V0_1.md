@@ -3,6 +3,17 @@ Receipt Envelope Validator v0.1
 
 Status: first public local validation command (Stage C4).
 
+> **Retired bootstrap track.** This document describes the retired bootstrap
+> envelope track — a divergent shape with a top-level `schema_version`, a
+> top-level `body`, and a top-level `body_kind`, validated by
+> `validator/validate_receipt_envelope_v0_1.py` against
+> `schemas/receipt-envelope-v0.1.schema.json`. That track is retired and those
+> artifacts have been removed. The canonical SRS envelope now lives at
+> `schemas/srs-envelope/v0.1.0/srs-envelope.schema.json`, validated by
+> `tools/validate_srs_envelope.py`; see `docs/SCHEMA_V0_1.md` and
+> `docs/BODY_KIND_EXTENSION_RULES.md`. The content below is retained for
+> historical reference only.
+
 This document describes `validator/validate_receipt_envelope_v0_1.py`, the
 first public local validation command for the GARP/SRS receipt conformance
 pack, and the expected pass/fail outputs committed alongside it.

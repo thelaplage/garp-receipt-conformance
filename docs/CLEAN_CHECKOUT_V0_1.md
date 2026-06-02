@@ -3,6 +3,18 @@ Clean-Checkout Verification v0.1
 
 Status: first public clean-checkout verification (Stage C5).
 
+> **Retired bootstrap track.** This document describes the retired bootstrap
+> envelope track — a divergent shape with a top-level `schema_version`, a
+> top-level `body`, and a top-level `body_kind`, with artifacts such as
+> `schemas/receipt-envelope-v0.1.schema.json`,
+> `schemas/receipt-envelope-v0.1.sha256`, and
+> `validator/validate_receipt_envelope_v0_1.py`. That track is retired and those
+> artifacts have been removed. The canonical SRS envelope now lives at
+> `schemas/srs-envelope/v0.1.0/srs-envelope.schema.json`, validated by
+> `tools/validate_srs_envelope.py`; see `docs/SCHEMA_V0_1.md` and
+> `docs/BODY_KIND_EXTENSION_RULES.md`. The content below is retained for
+> historical reference only.
+
 This document describes `scripts/check_pack_v0_1.sh`, the single command that
 lets an outside verifier confirm the receipt envelope conformance pack v0.1 is
 self-contained and behaves as committed — runnable from a clean public checkout
