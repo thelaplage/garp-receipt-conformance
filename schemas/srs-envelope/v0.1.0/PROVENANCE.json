@@ -1,0 +1,30 @@
+{
+  "note": "Provenance for the vendored canonical ARCS SRS envelope schema, its manifest, and the standalone validator. Every artifact below is a byte-identical copy of its arcs-srs source; the pack does not edit, normalize, reformat, or improve canonical artifacts. Pinning is to published_version + sha256, not to a repository path.",
+  "source_repo": "arcs-srs",
+  "vendored_artifacts": [
+    {
+      "artifact": "schemas/srs-envelope/v0.1.0/srs-envelope.schema.json",
+      "source_repo": "arcs-srs",
+      "source_path": "schemas/srs-envelope/v0.1.0/srs-envelope.schema.json",
+      "source_artifact_sha256": "e866eabf1cef537df6dc98f56f74021d8af585c94dc689f9fdd4ee97618d6b61",
+      "copied_artifact_sha256": "e866eabf1cef537df6dc98f56f74021d8af585c94dc689f9fdd4ee97618d6b61",
+      "copy_is_byte_identical": true
+    },
+    {
+      "artifact": "schemas/srs-envelope/v0.1.0/srs-envelope.schema.manifest.json",
+      "source_repo": "arcs-srs",
+      "source_path": "schemas/srs-envelope/v0.1.0/srs-envelope.schema.manifest.json",
+      "source_artifact_sha256": "28d341b40cbcf286405efdbf3749e54a3f89e80247070287f0770b5b541770d4",
+      "copied_artifact_sha256": "28d341b40cbcf286405efdbf3749e54a3f89e80247070287f0770b5b541770d4",
+      "copy_is_byte_identical": true
+    },
+    {
+      "artifact": "tools/validate_srs_envelope.py",
+      "source_repo": "arcs-srs",
+      "source_path": "tools/validate_srs_envelope.py",
+      "source_artifact_sha256": "cd69a7f2897f2b751fdda5a9306b80674212478e04c5430df6d990a5b4646f17",
+      "copied_artifact_sha256": "cd69a7f2897f2b751fdda5a9306b80674212478e04c5430df6d990a5b4646f17",
+      "copy_is_byte_identical": true
+    }
+  ]
+}

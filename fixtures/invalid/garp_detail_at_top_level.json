@@ -1,0 +1,27 @@
+{
+  "_invalid_reason": "GARP body detail (body_kind, retained_claims) is hoisted to the top level instead of living under extensions.garp.body",
+  "receipt_version": "srs.core.v5.1",
+  "receipt_id": "invalid-garp-top-level-0001",
+  "receipt_type": "provenance",
+  "boundary_type": "provenance_boundary",
+  "protocol_binding": "garp",
+  "subject_ref": "fixture:garp-detail-at-top-level",
+  "issued_at": "2026-01-01T00:00:00Z",
+  "artifact_classes_covered": [
+    "provenance"
+  ],
+  "artifact_classes_excluded": [
+    "truth_verification"
+  ],
+  "attestation_limits": [
+    "this receipt attests envelope shape only, not body truth"
+  ],
+  "body_kind": "compression_disposition",
+  "retained_claims": [
+    {
+      "candidate_ref": "claim_example",
+      "source_ref": "src_example"
+    }
+  ],
+  "extensions": {}
+}

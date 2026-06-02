@@ -1,0 +1,4 @@
+schema sha256 verified == manifest sha256: e866eabf1cef537df6dc98f56f74021d8af585c94dc689f9fdd4ee97618d6b61
+FAIL  fixtures/invalid/missing_artifact_classes_excluded.json  Invalid SRS envelope.
+        [MISSING_REQUIRED] required field 'artifact_classes_excluded' is missing
+        [MISSING_ARTIFACT_CLASSES_EXCLUDED] artifact_classes_excluded is required by the envelope schema but absent

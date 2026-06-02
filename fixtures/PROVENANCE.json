@@ -1,0 +1,114 @@
+{
+  "note": "Provenance for the vendored ARCS SRS envelope conformance fixtures. Every fixture below is a byte-identical copy of its arcs-srs source under conformance/fixtures/. The pack does not author, edit, normalize, or reformat any fixture; it vendors canonical bytes and pins them by digest.",
+  "source_repo": "arcs-srs",
+  "vendored_fixtures": [
+    {
+      "fixture": "fixtures/valid/provenance.minimal.json",
+      "validity": "valid",
+      "source_repo": "arcs-srs",
+      "source_path": "conformance/fixtures/valid/provenance.minimal.json",
+      "source_artifact_sha256": "609e09497a2c1aa8808302599f6cde62cb87479cbd18814016dceae670c94639",
+      "copied_artifact_sha256": "609e09497a2c1aa8808302599f6cde62cb87479cbd18814016dceae670c94639",
+      "copy_is_byte_identical": true
+    },
+    {
+      "fixture": "fixtures/valid/grace_session.minimal.json",
+      "validity": "valid",
+      "source_repo": "arcs-srs",
+      "source_path": "conformance/fixtures/valid/grace_session.minimal.json",
+      "source_artifact_sha256": "735507ce91b2920df182ce30f6c0c9b67fc08a9ea37b17c27e347925a103d397",
+      "copied_artifact_sha256": "735507ce91b2920df182ce30f6c0c9b67fc08a9ea37b17c27e347925a103d397",
+      "copy_is_byte_identical": true
+    },
+    {
+      "fixture": "fixtures/valid/sdk_enforcement.minimal.json",
+      "validity": "valid",
+      "source_repo": "arcs-srs",
+      "source_path": "conformance/fixtures/valid/sdk_enforcement.minimal.json",
+      "source_artifact_sha256": "b936829239eff6a5eb1db379fad87dda41e6585f58e142f77219bc2b30387c07",
+      "copied_artifact_sha256": "b936829239eff6a5eb1db379fad87dda41e6585f58e142f77219bc2b30387c07",
+      "copy_is_byte_identical": true
+    },
+    {
+      "fixture": "fixtures/valid/connection.minimal.json",
+      "validity": "valid",
+      "source_repo": "arcs-srs",
+      "source_path": "conformance/fixtures/valid/connection.minimal.json",
+      "source_artifact_sha256": "01869e4cf8915d0204d6a42b8b0d0ff202db9a50490da4342024885dae63f0ef",
+      "copied_artifact_sha256": "01869e4cf8915d0204d6a42b8b0d0ff202db9a50490da4342024885dae63f0ef",
+      "copy_is_byte_identical": true
+    },
+    {
+      "fixture": "fixtures/valid/compression_disposition.envelope.json",
+      "validity": "valid",
+      "role": "envelope-conformance fixture only",
+      "not_a": "GARP body-kind conformance target; this pack does not bless GARP body semantics",
+      "source_repo": "arcs-srs",
+      "source_path": "conformance/fixtures/valid/compression_disposition.envelope.json",
+      "source_artifact_sha256": "3292471d7e9583a386a398ee9abdd4d469a2f673db93515a6812ca0dabd08f42",
+      "copied_artifact_sha256": "3292471d7e9583a386a398ee9abdd4d469a2f673db93515a6812ca0dabd08f42",
+      "copy_is_byte_identical": true,
+      "upstream_origin": {
+        "note": "arcs-srs itself vendored this fixture from arcs-amnesiac; recorded here for traceability. The pack's vendoring source of truth remains arcs-srs.",
+        "source_repo": "arcs-amnesiac",
+        "source_path": "walkthroughs/amnesiac_signal_v0_1/canonical/compression_disposition.srs.json",
+        "source_artifact_sha256": "3292471d7e9583a386a398ee9abdd4d469a2f673db93515a6812ca0dabd08f42"
+      },
+      "why_envelope_only": "It is a real, committed ARCS envelope that carries a GARP body under extensions.garp.body. It demonstrates that a valid ARCS envelope can transport a GARP body; it does not assert truth, admission, custody, or public-surface eligibility of that body."
+    },
+    {
+      "fixture": "fixtures/invalid/garp_detail_at_top_level.json",
+      "validity": "invalid",
+      "source_repo": "arcs-srs",
+      "source_path": "conformance/fixtures/invalid/garp_detail_at_top_level.json",
+      "source_artifact_sha256": "554448d2bfe563a8ed312e04d4ebc7eec267b24630ed27ed6c18c4a8f097aa8f",
+      "copied_artifact_sha256": "554448d2bfe563a8ed312e04d4ebc7eec267b24630ed27ed6c18c4a8f097aa8f",
+      "copy_is_byte_identical": true
+    },
+    {
+      "fixture": "fixtures/invalid/stray_top_level_receipt_class.json",
+      "validity": "invalid",
+      "source_repo": "arcs-srs",
+      "source_path": "conformance/fixtures/invalid/stray_top_level_receipt_class.json",
+      "source_artifact_sha256": "df56ccc8db00c7764efc9d9c3874988ed0bbc331a8cb631755bae31243bfec3c",
+      "copied_artifact_sha256": "df56ccc8db00c7764efc9d9c3874988ed0bbc331a8cb631755bae31243bfec3c",
+      "copy_is_byte_identical": true
+    },
+    {
+      "fixture": "fixtures/invalid/top_level_verdict_discriminator.json",
+      "validity": "invalid",
+      "source_repo": "arcs-srs",
+      "source_path": "conformance/fixtures/invalid/top_level_verdict_discriminator.json",
+      "source_artifact_sha256": "3a4d5fd5ef72025f90377d9cf5f01bf7d753f3f594b7c133fc6ca19fb3fae7d8",
+      "copied_artifact_sha256": "3a4d5fd5ef72025f90377d9cf5f01bf7d753f3f594b7c133fc6ca19fb3fae7d8",
+      "copy_is_byte_identical": true
+    },
+    {
+      "fixture": "fixtures/invalid/missing_artifact_classes_excluded.json",
+      "validity": "invalid",
+      "source_repo": "arcs-srs",
+      "source_path": "conformance/fixtures/invalid/missing_artifact_classes_excluded.json",
+      "source_artifact_sha256": "3a0460d9d0ca86a3685687dde5e0b20323d9d6ea7fb22cca8c3b419b396fba85",
+      "copied_artifact_sha256": "3a0460d9d0ca86a3685687dde5e0b20323d9d6ea7fb22cca8c3b419b396fba85",
+      "copy_is_byte_identical": true
+    },
+    {
+      "fixture": "fixtures/invalid/missing_attestation_limits.json",
+      "validity": "invalid",
+      "source_repo": "arcs-srs",
+      "source_path": "conformance/fixtures/invalid/missing_attestation_limits.json",
+      "source_artifact_sha256": "a7bd21c21683db415cc84231a6e9a7a6a7004351f48d1117258232fbff679262",
+      "copied_artifact_sha256": "a7bd21c21683db415cc84231a6e9a7a6a7004351f48d1117258232fbff679262",
+      "copy_is_byte_identical": true
+    },
+    {
+      "fixture": "fixtures/invalid/receipt_type_outside_enum.json",
+      "validity": "invalid",
+      "source_repo": "arcs-srs",
+      "source_path": "conformance/fixtures/invalid/receipt_type_outside_enum.json",
+      "source_artifact_sha256": "2259e797f2069372e0c2c80a7cc5abed1e354746e01c27deac19eaa7086c7db1",
+      "copied_artifact_sha256": "2259e797f2069372e0c2c80a7cc5abed1e354746e01c27deac19eaa7086c7db1",
+      "copy_is_byte_identical": true
+    }
+  ]
+}

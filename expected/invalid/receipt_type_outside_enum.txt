@@ -1,0 +1,4 @@
+schema sha256 verified == manifest sha256: e866eabf1cef537df6dc98f56f74021d8af585c94dc689f9fdd4ee97618d6b61
+FAIL  fixtures/invalid/receipt_type_outside_enum.json  Invalid SRS envelope.
+        [SCHEMA_ENUM] receipt_type value 'compression_disposition' not in closed enum ['sdk_enforcement', 'grace_session', 'connection', 'provenance']
+        [RECEIPT_TYPE_NOT_IN_ENUM] receipt_type 'compression_disposition' not in closed enum ['sdk_enforcement', 'grace_session', 'connection', 'provenance']

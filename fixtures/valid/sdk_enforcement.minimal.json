@@ -1,0 +1,19 @@
+{
+  "receipt_version": "srs.core.v5.1",
+  "receipt_id": "sdk-enforcement-minimal-0001",
+  "receipt_type": "sdk_enforcement",
+  "boundary_type": "sdk_enforcement_boundary",
+  "protocol_binding": "arcs-srs",
+  "subject_ref": "fixture:sdk-enforcement-minimal",
+  "issued_at": "2026-01-01T00:00:00Z",
+  "artifact_classes_covered": [
+    "trace"
+  ],
+  "artifact_classes_excluded": [
+    "truth_verification"
+  ],
+  "attestation_limits": [
+    "this receipt attests envelope shape only, not body truth"
+  ],
+  "extensions": {}
+}

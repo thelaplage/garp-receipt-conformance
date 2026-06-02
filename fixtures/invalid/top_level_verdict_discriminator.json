@@ -1,0 +1,21 @@
+{
+  "_invalid_reason": "top-level 'verdict' is used as a body-verdict discriminator; the envelope never carries a body verdict",
+  "receipt_version": "srs.core.v5.1",
+  "receipt_id": "invalid-top-level-verdict-0001",
+  "receipt_type": "provenance",
+  "boundary_type": "provenance_boundary",
+  "protocol_binding": "arcs-srs",
+  "subject_ref": "fixture:top-level-verdict",
+  "issued_at": "2026-01-01T00:00:00Z",
+  "artifact_classes_covered": [
+    "provenance"
+  ],
+  "artifact_classes_excluded": [
+    "truth_verification"
+  ],
+  "attestation_limits": [
+    "this receipt attests envelope shape only, not body truth"
+  ],
+  "verdict": "admitted",
+  "extensions": {}
+}

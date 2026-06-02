@@ -1,6 +1,0 @@
-{
-  "schema_version": "0.1",
-  "receipt_kind": "example.minimal",
-  "body_kind": "example.opaque",
-  "body": {}
-}

@@ -3,6 +3,17 @@ Compression-Disposition Fixture v0.1.1
 
 Status: additive v0.1.1-compatible pack content (docs + fixtures only).
 
+> **Retired bootstrap track.** This document describes the fixture in the retired
+> bootstrap envelope shape — a divergent shape with a top-level `schema_version`,
+> a top-level `body`, and a top-level `body_kind`, validated against
+> `schemas/receipt-envelope-v0.1.schema.json`. That track is retired and those
+> artifacts have been removed. The canonical SRS envelope now lives at
+> `schemas/srs-envelope/v0.1.0/srs-envelope.schema.json`; the reconciled pack
+> carries the canonical compression-disposition fixture at
+> `fixtures/valid/compression_disposition.envelope.json`. See
+> `docs/SCHEMA_V0_1.md` and `docs/BODY_KIND_EXTENSION_RULES.md`. The content
+> below is retained for historical reference only.
+
 This document describes the `compression_disposition` `body_kind` candidate
 fixture added to the receipt envelope conformance pack:
 

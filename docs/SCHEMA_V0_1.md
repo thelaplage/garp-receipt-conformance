@@ -1,52 +1,79 @@
-Receipt Envelope Schema v0.1
-============================
+ARCS SRS Envelope Schema (vendored v0.1.0)
+==========================================
 
-Status: first public schema artifact (Stage C2).
+Status: faithful, digest-pinned vendoring of the canonical ARCS SRS envelope
+schema.
 
-This document describes `schemas/receipt-envelope-v0.1.schema.json`, the first
-public schema artifact for the GARP/SRS receipt conformance pack, and its
-pinned digest/version marker.
+This document describes `schemas/srs-envelope/v0.1.0/srs-envelope.schema.json`,
+a **byte-identical copy** of the canonical ARCS SRS envelope schema from
+`arcs-srs`, and its pinned digest. The pack does not define its own schema; it
+mirrors canonical. Any change to the schema is made upstream in `arcs-srs` first
+and then re-vendored — the pack never edits, normalizes, reformats, or improves
+the canonical bytes.
 
-1. What this schema validates
+1. Source of truth and pin
+--------------------------
+
+- Source of truth: `arcs-srs`,
+  `schemas/srs-envelope/v0.1.0/srs-envelope.schema.json`.
+- Vendored copy: `schemas/srs-envelope/v0.1.0/srs-envelope.schema.json`.
+- Manifest: `schemas/srs-envelope/v0.1.0/srs-envelope.schema.manifest.json`
+  (also vendored byte-identical).
+- Pinned SHA-256:
+
+      e866eabf1cef537df6dc98f56f74021d8af585c94dc689f9fdd4ee97618d6b61
+
+  recorded in `schemas/srs-envelope/v0.1.0/srs-envelope.schema.sha256` and in
+  the manifest's `sha256` / `identity` fields.
+
+Pinning is to `published_version` + `sha256`, **not** to a repository path. The
+validator computes the schema file's digest and refuses to run unless it equals
+the manifest's recorded digest, so the pin holds even if the canonical home
+relocates.
+
+Three distinct version markers, none invented:
+
+- pack release marker — `v0.1`
+- vendored schema version — `v0.1.0`
+- receipt version carried by canonical receipts — `srs.core.v5.1`
+
+2. What this schema validates
 -----------------------------
 
-The schema validates **receipt envelope form only**. It is a minimal,
-envelope-level JSON Schema (Draft 2020-12) that asserts an envelope carries the
-structural fields a verifier needs to route and version a receipt.
+The schema validates ARCS SRS **envelope form only**. It requires the following
+top-level envelope fields:
 
-Required envelope fields:
+- `receipt_version` — canonical SRS receipt version (e.g. `srs.core.v5.1`; the
+  schema also accepts the legacy numeric form).
+- `receipt_id`
+- `receipt_type` — a **closed enum**: `sdk_enforcement`, `grace_session`,
+  `connection`, `provenance`.
+- `boundary_type`
+- `protocol_binding`
+- `subject_ref`
+- `issued_at`
+- `artifact_classes_covered`
+- `artifact_classes_excluded`
+- `attestation_limits`
+- `extensions`
 
-- `schema_version` — version marker the receipt declares conformance to.
-- `receipt_kind` — stable identifier for the kind of receipt.
-- `body_kind` — stable identifier selecting the body vocabulary/schema. This is
-  the documented extension point (see `BODY_KIND_EXTENSION_RULES.md`).
-- `body` — the receipt payload object.
+Optional fields include `retention_class_applied` and `receipt_signature` (a
+string or a structured object). The canonical schema sets
+`additionalProperties: true`; this quirk is preserved exactly as vendored.
 
-Optional envelope fields:
+Crucially, the envelope carries **no** top-level `schema_version` and **no**
+top-level `body`. GARP body content lives only under `extensions.garp.body`
+(see `BODY_KIND_EXTENSION_RULES.md`).
 
-- `receipt_id` — opaque per-instance identifier.
-- `issued_at` — RFC 3339 / ISO 8601 date-time.
-- `ext` — controlled extension namespace for not-yet-standardized
-  envelope-level fields.
-
-Posture on extra fields: the top-level envelope is **strict**
-(`additionalProperties: false`). Controlled extension is funneled through the
-explicit `ext` object so the envelope can stay strict while remaining
-forward-compatible. The `body` object is intentionally **opaque** at this layer:
-the envelope asserts only that a `body` object is present, not its internal
-shape.
-
-2. What this schema does NOT validate
+3. What this schema does NOT validate
 -------------------------------------
 
-The schema validates form, not substance. In particular it does not validate or
-prove:
+The schema validates envelope form, not substance. In particular it does not
+validate or prove:
 
-- the internal shape or contents of `body` (that is the future
-  `body_kind`-specific schema's job),
-- truth, correctness, or completeness of the receipt,
-- legal compliance, security, or performance,
-- admission or provenance of any source material,
+- GARP body-kind conformance or any GARP body semantics,
+- truth, correctness, admission, custody, or completeness of the receipt,
+- public-surface eligibility of anything a receipt carries,
 - absence of private-corpus leakage,
 - real-world or external adoption,
 - that any product/runtime behaved as claimed outside the receipt and fixture
@@ -54,59 +81,35 @@ prove:
 
 See `ATTESTATION_LIMITS.md` for the full attestation-limit posture.
 
-3. Digest / version marker
---------------------------
+4. Verifying the pin from a clean checkout
+------------------------------------------
 
-The version marker is `v0.1`, reflected in the artifact filename, the schema
-`$id`, the `title`/`description`, and the `schema_version` value the schema
-expects (`"0.1"`).
+    shasum -a 256 schemas/srs-envelope/v0.1.0/srs-envelope.schema.json
+    shasum -c schemas/srs-envelope/v0.1.0/srs-envelope.schema.sha256
 
-The artifact is pinned by a SHA-256 digest recorded in
-`schemas/receipt-envelope-v0.1.sha256`, in standard `sha256sum`-style format
-(hex digest, two spaces, filename).
+Any change to the schema bytes changes the digest. A new schema version is
+published upstream as a new artifact with a new pinned digest and then
+re-vendored, rather than by mutating this one.
 
-To verify the pin from a clean public checkout:
+5. How the validator and fixtures use it
+----------------------------------------
 
-    shasum -a 256 schemas/receipt-envelope-v0.1.schema.json
-    # or, from inside schemas/:
-    cd schemas && shasum -a 256 -c receipt-envelope-v0.1.sha256
+`tools/validate_srs_envelope.py` (vendored canonical validator):
 
-Any change to the schema bytes changes the digest. A new schema version will be
-published as a new artifact and a new pinned digest rather than by mutating this
-one.
+- loads the manifest and schema,
+- computes the schema's sha256 and fails hard unless it matches the manifest,
+- validates a receipt against the envelope schema (a small built-in subset
+  check: type / required / enum / items / oneOf / properties),
+- enforces envelope-only guardrails (closed `receipt_type` enum, required
+  fields present, GARP detail only under `extensions.garp.body`, no top-level
+  `receipt_class`, no top-level body verdict/discriminator).
 
-4. How future fixtures will use it
-----------------------------------
+`scripts/check_pack_v0_1.sh` runs the validator against every vendored fixture
+and compares output to `expected/`. See `FIXTURES_V0_1.md`.
 
-When fixtures are added in a later stage, each fixture's metadata will reference
-this schema by version and digest (see `FIXTURE_PROVENANCE.md`). A future
-validator will:
-
-- load `schemas/receipt-envelope-v0.1.schema.json`,
-- confirm the loaded bytes match the pinned digest,
-- validate `fixtures/valid/*` as schema-conformant envelopes,
-- confirm `fixtures/invalid/*` are rejected,
-- compare results against expected pass/fail outputs in `expected/`.
-
-Fixtures must be public-safe and validatable from a clean public checkout
-without private-corpus access (see `NO_PRIVATE_CORPUS.md`).
-
-5. Scope of this PR
--------------------
-
-This PR adds **only** the schema artifact, its pinned digest file, and this
-document. It does not add fixtures and does not add validator code. Those arrive
-in later stages.
-
-6. Non-claims
+6. Provenance
 -------------
 
-This artifact does not, by itself:
-
-- emit any receipt,
-- validate any fixture,
-- register any `body_kind` beyond the envelope schema vocabulary (the envelope
-  only requires that a `body_kind` be declared; it defines none),
-- claim any external adoption,
-- prove any product or runtime behavior,
-- depend on any private corpus, private repository, or internal runtime state.
+`schemas/srs-envelope/v0.1.0/PROVENANCE.json` records the source repo, source
+path, source sha256, copied sha256, and `copy_is_byte_identical: true` for the
+schema, manifest, and validator. See `FIXTURE_PROVENANCE.md` for fixtures.

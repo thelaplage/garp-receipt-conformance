@@ -1,2 +1,0 @@
-PASS: receipt-envelope-compression-disposition-v0.1.1.json
-envelope-form valid against receipt-envelope v0.1

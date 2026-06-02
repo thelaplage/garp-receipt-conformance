@@ -1,0 +1,70 @@
+{
+  "artifact_classes_covered": [
+    "authored_support_state",
+    "refused_candidate",
+    "trace",
+    "packet_inspection",
+    "provenance"
+  ],
+  "artifact_classes_excluded": [
+    "truth_verification",
+    "automated_citation_detection",
+    "external_fact_checking"
+  ],
+  "attestation_limits": [
+    "support_state was authored, not engine-determined",
+    "the spine routed the authored label deterministically",
+    "refused means unsourced, not false",
+    "this receipt does not verify the underlying sentence"
+  ],
+  "boundary_type": "publication_disposition",
+  "extensions": {
+    "garp": {
+      "body": {
+        "artifact_hashes": {
+          "packet_inspection.json": "sha256:0459c8bd863d08270b1779f6524cc076fff283badde8188b7d8fa8a20274838f",
+          "sovereignty_receipt.json": "sha256:931570cbac9df10f05959463f1367cd9c6af195a0c363ff6174a25719c3e39a5",
+          "trace.md": "sha256:a7de41bd4b5ce2b91fb13ea53150d120fb979f7e8d4952b7d08fb5f823e58f97"
+        },
+        "body_kind": "compression_disposition",
+        "candidate_total": 6,
+        "omitted_candidates": [],
+        "refused_candidates": [
+          {
+            "candidate_ref": "claim_economic_governor",
+            "lifecycle": "rejected",
+            "reason": "candidate refused under ContextPacket must_refuse_if_unsupported (Source-Before-Claim): support_state=unsupported; no cited source in CP-33 attaches: AI removes the natural economic governor on litigation activity: attorney time and cost."
+          }
+        ],
+        "retained_claims": [
+          {
+            "candidate_ref": "claim_bloomberg_surge",
+            "source_ref": "src_bloomberg_law"
+          },
+          {
+            "candidate_ref": "claim_pro_se_surge_49",
+            "source_ref": "src_fisher_phillips"
+          },
+          {
+            "candidate_ref": "claim_fha_69",
+            "source_ref": "src_seyfarth_shaw"
+          },
+          {
+            "candidate_ref": "claim_charlotin_52",
+            "source_ref": "src_charlotin_database"
+          },
+          {
+            "candidate_ref": "claim_apks_sanction",
+            "source_ref": "src_apks_sanction"
+          }
+        ]
+      }
+    }
+  },
+  "issued_at": "2026-05-30T00:00:00Z",
+  "protocol_binding": "garp",
+  "receipt_id": "compression-disposition-a677405d36998da6",
+  "receipt_type": "provenance",
+  "receipt_version": "0.1",
+  "subject_ref": "amnesiac-signal-walkthrough.v0_1"
+}

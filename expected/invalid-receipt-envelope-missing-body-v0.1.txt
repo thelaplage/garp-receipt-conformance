@@ -1,3 +1,0 @@
-FAIL: receipt-envelope-missing-body-v0.1.json
-envelope-form invalid against receipt-envelope v0.1
-  - body: required field missing
