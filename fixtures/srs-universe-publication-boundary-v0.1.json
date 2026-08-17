@@ -1,0 +1,48 @@
+{
+  "fixture_set": "srs-universe-publication-boundary-v0.1",
+  "status": "implementation_guard",
+  "canonical_doctrine_claim": false,
+  "doctrine_candidate": "thelaplage/garp-doctrine#184",
+  "cases": [
+    {
+      "id": "valid_receipt_absent_counterpedia",
+      "input": {"receipt_valid": true, "counterpedia_included": false},
+      "expected": {"receipt_valid": true, "receipt_nonexistent": false}
+    },
+    {
+      "id": "valid_receipt_no_local_artifact",
+      "input": {"receipt_valid": true, "local_artifact_present": false, "profile_requires_local_artifact": false},
+      "expected": {"receipt_valid": true, "locally_custodied": false}
+    },
+    {
+      "id": "custody_without_publication",
+      "input": {"artifact_custodied": true, "counterpedia_included": false},
+      "expected": {"counterpedia_included": false, "admitted": false}
+    },
+    {
+      "id": "publication_cannot_repair_malformed_receipt",
+      "input": {"receipt_valid": false, "counterpedia_included": true},
+      "expected": {"receipt_valid": false}
+    },
+    {
+      "id": "many_receipts_one_source",
+      "input": {"source_identity_count": 1, "receipt_count": 10000},
+      "expected": {"source_identity_count": 1, "authority_increased_by_count": false}
+    },
+    {
+      "id": "many_replicas_one_artifact",
+      "input": {"artifact_identity_count": 1, "replica_count": 10000},
+      "expected": {"artifact_identity_count": 1, "importance_increased_by_replica_count": false}
+    },
+    {
+      "id": "dagr_receipt_no_auto_publish",
+      "input": {"dagr_receipt_emitted": true},
+      "expected": {"auto_publish_counterpedia": false}
+    },
+    {
+      "id": "current_countergraph_not_universal_srs_graph",
+      "input": {"current_countergraph_snapshot": true},
+      "expected": {"universal_srs_graph": false}
+    }
+  ]
+}
