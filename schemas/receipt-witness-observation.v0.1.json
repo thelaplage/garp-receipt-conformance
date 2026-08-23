@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://counterpedia.org/schemas/receipt-witness-observation.v0.1.json",
+  "title": "ReceiptWitnessObservation v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "receipt_digest", "witness_node_id", "observed_at", "signature", "authority_effect"],
+  "properties": {
+    "schema": {"const": "receipt.witness_observation.v0_1"},
+    "receipt_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "witness_node_id": {"type": "string", "minLength": 3},
+    "observed_at": {"type": "string", "format": "date-time"},
+    "signature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "key_id", "value"],
+      "properties": {
+        "algorithm": {"type": "string", "minLength": 1},
+        "key_id": {"type": "string", "minLength": 1},
+        "value": {"type": "string", "minLength": 1}
+      }
+    },
+    "authority_effect": {"const": "none"}
+  }
+}
