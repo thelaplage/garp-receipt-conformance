@@ -5,6 +5,28 @@ from typing import Mapping,Any
 
 SERVICES=frozenset({"receipt_verify","receipt_witness","receipt_store","replay_verify"})
 
+# Authority/truth/admission-shaped keys this market layer never carries. Rule
+# NE-11: "no authority" is expressed by these keys being STRUCTURALLY ABSENT
+# from every market-contract object and its serialized body -- never by a
+# field pinned to "none"/0/"descriptive_only". Untrusted input that tries to
+# smuggle one of these keys in must fail closed (raise), not be silently
+# dropped and not be accepted-then-defaulted.
+FORBIDDEN_AUTHORITY_KEYS=frozenset({
+    "authority_effect","admission_effect","trust_effect","standing_effect",
+    "truth_effect","registry_mutation_effect","authority_posture","authority_movement",
+    "trusted","authorized","admitted","standing",
+})
+
+def reject_authority_injection(payload:Mapping[str,Any])->None:
+    """Fail closed if any authority/truth/admission-shaped key is present in
+    untrusted input. Absence must be enforced, not merely the field's default."""
+    injected=FORBIDDEN_AUTHORITY_KEYS.intersection(payload)
+    if injected:
+        raise ValueError(
+            "authority/truth/admission-shaped field(s) may not be injected into "
+            f"a witness-market payload: {sorted(injected)}"
+        )
+
 def _digest(v:Mapping[str,Any])->str:
     return "sha256:"+hashlib.sha256(json.dumps(v,sort_keys=True,separators=(",",":"),ensure_ascii=False).encode()).hexdigest()
 
@@ -15,17 +37,15 @@ class WitnessServiceOffer:
     profile_ref:str
     guarantees:tuple[str,...]
     offer_id:str
-    authority_effect:str="none"
-    truth_effect:str="none"
 
     @classmethod
     def build(cls,provider_node_id:str,service_kind:str,profile_ref:str,guarantees=()):
         if service_kind not in SERVICES: raise ValueError("unsupported witness service")
         if not provider_node_id or not profile_ref: raise ValueError("provider/profile required")
         gs=tuple(sorted(set(guarantees)))
-        forbidden={"truth","authorized","admitted","trusted"}
+        forbidden={"truth","authorized","admitted","trusted","standing"}
         if forbidden.intersection(gs): raise ValueError("witness offer may not promise truth/authority")
-        body={"provider_node_id":provider_node_id,"service_kind":service_kind,"profile_ref":profile_ref,"guarantees":gs,"authority_effect":"none","truth_effect":"none"}
+        body={"provider_node_id":provider_node_id,"service_kind":service_kind,"profile_ref":profile_ref,"guarantees":gs}
         oid="witness-service-offer:"+_digest(body).split(":",1)[1]
         return cls(provider_node_id,service_kind,profile_ref,gs,oid)
 
@@ -47,8 +67,6 @@ class WitnessResult:
     request_id:str
     native_artifact_ref:str
     status:str
-    authority_effect:str="none"
-    truth_effect:str="none"
 
     def __post_init__(self):
         if self.status not in {"PASS","FAIL","NOT_EVALUATED","OBSERVED"}: raise ValueError("invalid status")

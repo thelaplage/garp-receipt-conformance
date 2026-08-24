@@ -62,10 +62,14 @@ its contents true, does not authorize anything, and does not admit anything.
 This is enforced two ways:
 
 - **In the contracts** (`witness_market.py`, repository root):
-  `WitnessServiceOffer`, `WitnessRequest`, and `WitnessResult` all carry
-  `authority_effect="none"` and `truth_effect="none"` as fixed fields, and
+  `WitnessServiceOffer`, `WitnessRequest`, and `WitnessResult` structurally
+  **lack** any `authority_effect` or `truth_effect` field — non-authority is
+  expressed by the field's absence, never by a field pinned to `"none"`.
   `WitnessServiceOffer.build` raises `ValueError` if any guarantee tries to
-  promise `truth`, `authorized`, `admitted`, or `trusted`.
+  promise `truth`, `authorized`, `admitted`, `trusted`, or `standing`, and
+  `witness_market.reject_authority_injection` fails closed (raises
+  `ValueError`) if untrusted scenario input tries to smuggle an
+  authority/truth/admission-shaped key in at all.
 - **In the receipt shape**: the market transaction's `result.status` field
   (`PASS` / `FAIL` / `NOT_EVALUATED` / `OBSERVED`) lives only under
   `extensions.garp.body.result.status`. Hoisting it to a top-level `status` on
@@ -87,8 +91,10 @@ integrity only**, plus the market layer's own non-collapse invariant:
   `extensions.garp.body.artifact_hashes` equals the sha256 of the input file —
   and regenerates byte-identically from that input.
 - **non-collapse**: the offer, request, and result identifiers stay distinct
-  and bind correctly to one another (no silent substitution), and
-  `authority_effect`/`truth_effect` stay `"none"` throughout.
+  and bind correctly to one another (no silent substitution), and no
+  `authority_effect`/`truth_effect` field is ever defined on the market
+  contracts or serialized into the receipt body — structural absence, not a
+  value pinned to `"none"`.
 
 It does **not** prove that the subject receipt (`subject_ref`, the receipt
 being witnessed) is valid. It does not prove that any action the subject

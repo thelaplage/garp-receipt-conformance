@@ -30,22 +30,21 @@
       "generated_by": "tools/build_receipt.py",
       "generated_from": "input/witness_market.input.json",
       "deterministic": true,
-      "sha256": "bcccde1e66674472d312403ce549da2b4a984e564c17eac6a5b04a5f4479c71c"
+      "sha256": "5b2c49d10a498ba26fdc52a8c28eb283aa609b9dcf31531fadc41c070e5cd49c"
     },
     {
       "artifact": "fixtures/invalid/top_level_status_verdict.json",
       "role": "forbidden-drift fixture (hoists the witness result's status as a top-level verdict instead of leaving it under extensions.garp.body.result.status)",
       "authored": true,
       "rejected_by_canonical_validator": "TOP_LEVEL_BODY_VERDICT",
-      "sha256": "1970c09a456c38abf4002cbd619659d7853d3c09877d4b5be29e367b4823d0ad"
+      "sha256": "2fde959a31ec4dd26a671f1f0c5595ffdd217f38215a681209aa5c8ff8f186fe"
     }
   ],
   "market_contracts": {
     "module": "witness_market.py",
     "location": "repository root",
     "loaded_by": "tools/build_receipt.py and tools/check_invariant_guard.py via importlib file-path loading (no sys.path/cwd dependence)",
-    "authority_effect": "none",
-    "truth_effect": "none",
+    "authority_truth_effect_posture": "WitnessServiceOffer, WitnessRequest, and WitnessResult structurally lack any authority_effect/truth_effect field -- non-authority is expressed by the fields' absence, never by a field pinned to \"none\". witness_market.reject_authority_injection() fails closed if untrusted input tries to smuggle one of those keys (or trusted/authorized/admitted/standing) in.",
     "rule": "witness_offer_exists != witness_selected != receipt_observed != receipt_valid != action_authorized != result_true; witness count never substitutes for verification or admission."
   }
 }

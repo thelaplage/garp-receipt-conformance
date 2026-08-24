@@ -33,29 +33,25 @@
           "result_true"
         ],
         "offer": {
-          "authority_effect": "none",
           "guarantees": [
             "exact_bytes",
             "observed_at"
           ],
-          "offer_id": "witness-service-offer:86dafbac7c98092c3ed0d6ce735c129c26cdb6762462c3e339dbc6d55d641ad1",
+          "offer_id": "witness-service-offer:05955aa7df0c8e8e558161167b32d28ef0244110f8149d4f512496d54fd82e90",
           "profile_ref": "profile:srs-envelope-v0.1.0",
           "provider_node_id": "node:witness-alpha",
-          "service_kind": "receipt_witness",
-          "truth_effect": "none"
+          "service_kind": "receipt_witness"
         },
         "request": {
           "receipt_digest": "sha256:5d5579730f2db5b70fd74bc1a2f501995816adb115ccf445d9a775e50b12f334",
-          "request_id": "witness-request:f755114789aed2dc14dda6dadca84143a340d34bd1ac62aba86f77e7ddc66715",
+          "request_id": "witness-request:03afbebe0429bd9ce4e4ed200e503622e37b9b4973fdf1d67d16f513bafc41e3",
           "requested_service": "receipt_witness",
-          "service_offer_id": "witness-service-offer:86dafbac7c98092c3ed0d6ce735c129c26cdb6762462c3e339dbc6d55d641ad1"
+          "service_offer_id": "witness-service-offer:05955aa7df0c8e8e558161167b32d28ef0244110f8149d4f512496d54fd82e90"
         },
         "result": {
-          "authority_effect": "none",
           "native_artifact_ref": "witness-observation://node:witness-alpha/0001",
-          "request_id": "witness-request:f755114789aed2dc14dda6dadca84143a340d34bd1ac62aba86f77e7ddc66715",
-          "status": "OBSERVED",
-          "truth_effect": "none"
+          "request_id": "witness-request:03afbebe0429bd9ce4e4ed200e503622e37b9b4973fdf1d67d16f513bafc41e3",
+          "status": "OBSERVED"
         }
       }
     }

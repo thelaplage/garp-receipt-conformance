@@ -98,6 +98,11 @@ def build_receipt(input_path: Path) -> dict:
     raw = input_path.read_bytes()
     input_digest = sha256_of_bytes(raw)
     scenario = json.loads(raw)
+    # Fail closed: reject the entire scenario if it tries to smuggle in an
+    # authority/truth/admission-shaped key. Absence of these keys must be
+    # enforced at this untrusted-input boundary, not merely relied on because
+    # nothing downstream happens to read them.
+    wm.reject_authority_injection(scenario)
 
     offer = wm.WitnessServiceOffer.build(
         provider_node_id=scenario["provider_node_id"],
@@ -124,8 +129,6 @@ def build_receipt(input_path: Path) -> dict:
             "profile_ref": offer.profile_ref,
             "guarantees": list(offer.guarantees),
             "offer_id": offer.offer_id,
-            "authority_effect": offer.authority_effect,
-            "truth_effect": offer.truth_effect,
         },
         "request": {
             "receipt_digest": request.receipt_digest,
@@ -137,8 +140,6 @@ def build_receipt(input_path: Path) -> dict:
             "request_id": result.request_id,
             "native_artifact_ref": result.native_artifact_ref,
             "status": result.status,
-            "authority_effect": result.authority_effect,
-            "truth_effect": result.truth_effect,
         },
         "invariant_chain": [
             "witness_offer_exists",

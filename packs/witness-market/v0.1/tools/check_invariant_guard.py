@@ -4,8 +4,9 @@
 Exercises ``witness_market.py`` (repository root) directly and asserts the
 properties this pack depends on:
 
-1. The valid fixture's offer and result both carry authority_effect="none"
-   and truth_effect="none" (a witness never gains authority).
+1. The valid fixture's offer and result STRUCTURALLY LACK authority_effect
+   and truth_effect fields entirely (a witness never gains authority --
+   expressed by the fields' absence, never by a field pinned to "none").
 2. The chain of market-transaction identifiers does not collapse: offer_id,
    request_id, the subject receipt_digest, and the native_artifact_ref are
    four distinct strings, and the request/result correctly bind back to the
@@ -21,6 +22,9 @@ properties this pack depends on:
    ``sha256:``-prefixed and refuses an unsupported requested_service.
 7. ``WitnessResult`` refuses a status outside {PASS, FAIL, NOT_EVALUATED,
    OBSERVED} and refuses an empty native_artifact_ref.
+8. ``witness_market.reject_authority_injection`` fails closed: a payload
+   carrying ``authority_effect`` (pinned to ``"none"`` or to any other value),
+   ``trusted``, or ``admitted`` is rejected outright, not silently dropped.
 
 Standard library only. Run directly from the repository root:
 
@@ -63,12 +67,13 @@ def _load_witness_market():
     return module
 
 
-def check_valid_fixture_no_authority_or_truth_effect(body: dict) -> None:
+def check_valid_fixture_has_no_authority_or_truth_effect_fields(body: dict) -> None:
     offer, result = body["offer"], body["result"]
-    assert offer["authority_effect"] == "none", "offer.authority_effect must be 'none'"
-    assert offer["truth_effect"] == "none", "offer.truth_effect must be 'none'"
-    assert result["authority_effect"] == "none", "result.authority_effect must be 'none'"
-    assert result["truth_effect"] == "none", "result.truth_effect must be 'none'"
+    forbidden = {"authority_effect", "truth_effect"}
+    offer_hit = forbidden.intersection(offer)
+    assert not offer_hit, f"offer must not carry authority/truth-effect fields, found {offer_hit}"
+    result_hit = forbidden.intersection(result)
+    assert not result_hit, f"result must not carry authority/truth-effect fields, found {result_hit}"
 
 
 def check_identifier_non_collapse(body: dict) -> None:
@@ -148,8 +153,23 @@ def check_malformed_witness_result_refused(wm) -> None:
         raise AssertionError("empty native_artifact_ref was not refused")
 
 
+def check_authority_field_injection_rejected(wm) -> None:
+    hostile_payloads = [
+        {"authority_effect": "none"},
+        {"authority_effect": "admitted"},
+        {"trusted": True},
+        {"admitted": True},
+    ]
+    for payload in hostile_payloads:
+        try:
+            wm.reject_authority_injection(payload)
+        except ValueError:
+            continue
+        raise AssertionError(f"authority-shaped injection was not refused: {payload}")
+
+
 CHECKS = [
-    ("no authority/truth effect on valid fixture's offer and result", check_valid_fixture_no_authority_or_truth_effect),
+    ("valid fixture's offer and result structurally lack authority/truth-effect fields", check_valid_fixture_has_no_authority_or_truth_effect_fields),
     ("market identifiers do not collapse and bind correctly", check_identifier_non_collapse),
     ("invariant chain declared verbatim with distinct states", check_invariant_chain_declared_and_distinct),
 ]
@@ -159,6 +179,7 @@ MODULE_CHECKS = [
     ("unsupported service_kind refused", check_unsupported_service_kind_refused),
     ("malformed witness request refused", check_malformed_witness_request_refused),
     ("malformed witness result refused", check_malformed_witness_result_refused),
+    ("authority-shaped field injection rejected (fail closed)", check_authority_field_injection_rejected),
 ]
 
 
