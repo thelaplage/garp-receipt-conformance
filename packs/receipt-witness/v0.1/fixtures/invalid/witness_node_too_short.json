@@ -7,6 +7,5 @@
     "algorithm": "ed25519",
     "key_id": "n:key-1",
     "value": "1c4570dd7c813c2961850f39b5bda85a9d13b5e96de686e6df76fbbdd5c2ffde"
-  },
-  "authority_effect": "none"
+  }
 }

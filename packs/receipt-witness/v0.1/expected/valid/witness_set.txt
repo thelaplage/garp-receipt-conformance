@@ -1,8 +1,8 @@
-WITNESS-SET  receipt_digest=sha256:cd39fb5019b44fecda66b39fcc561ad4ba0449a519d633d51586d5156254c269  witness_count=3  authority_effect=none
+WITNESS-SET  receipt_digest=sha256:cd39fb5019b44fecda66b39fcc561ad4ba0449a519d633d51586d5156254c269  witness_count=3
   witness_node: node:witness-a
   witness_node: node:witness-b
   witness_node: node:witness-c
-  observation_digest: sha256:33dfbfd07c7d8b4397595d17a2f1b5d12759fd89c073266d518b720190926691
-  observation_digest: sha256:49d07f7208551daa9a8a244ec3b9afb406f43304a9de8d726621da57e8bed4ed
-  observation_digest: sha256:cbd5c29cdbc6c4be126884fa409c653dd47e0f23c583b10e5215436857d42818
+  observation_digest: sha256:10e70b384284148898ccc868fa3be56c5361ce6ae3576f2e9293aacd34d87882
+  observation_digest: sha256:1c565fcb8d1e93aeb6d6486962f809fdf2c79e29695b515612ef2ffcc9de0f51
+  observation_digest: sha256:7692711b4ae5d8e88458a5479993ae9430363ab29b7770d4054a2c68d4097e3c
   note: witness_count is a count of independently addressable observations, not a verdict, admission, or truth signal.

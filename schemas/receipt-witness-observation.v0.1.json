@@ -4,7 +4,7 @@
   "title": "ReceiptWitnessObservation v0.1",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema", "receipt_digest", "witness_node_id", "observed_at", "signature", "authority_effect"],
+  "required": ["schema", "receipt_digest", "witness_node_id", "observed_at", "signature"],
   "properties": {
     "schema": {"const": "receipt.witness_observation.v0_1"},
     "receipt_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
@@ -19,7 +19,6 @@
         "key_id": {"type": "string", "minLength": 1},
         "value": {"type": "string", "minLength": 1}
       }
-    },
-    "authority_effect": {"const": "none"}
+    }
   }
 }

@@ -9,6 +9,14 @@ Required invariant (RECEIPT-WITNESS0):
     witnessed_bytes != valid_receipt != authorized_action != true_result
     != admitted_evidence
 
+No authority/admission/trust-shaped field (e.g. `authority_effect`) is
+defined anywhere on this object. "No authority" is expressed by that
+field's structural absence, not by serializing it pinned to a benign value:
+the schema is closed (`additionalProperties: false`) and this module's
+`REQUIRED_TOP_LEVEL_FIELDS` is the only field set `parse_observation`
+accepts, so an untrusted payload that tries to add such a field (whatever
+value it carries) is rejected outright, before any other check runs.
+
 No blockchain, no consensus protocol, no global timestamp authority, and no
 truth-from-count: `build_witness_set` below only ever aggregates independently
 addressable observations. A higher witness_count is not, and must never be
@@ -29,7 +37,6 @@ REQUIRED_TOP_LEVEL_FIELDS = (
     "witness_node_id",
     "observed_at",
     "signature",
-    "authority_effect",
 )
 REQUIRED_SIGNATURE_FIELDS = ("algorithm", "key_id", "value")
 
@@ -63,18 +70,11 @@ class ReceiptWitnessObservation:
     observed_at: str
     signature: Signature
     schema: str = "receipt.witness_observation.v0_1"
-    authority_effect: str = "none"
 
     def validate(self) -> None:
         if self.schema != SCHEMA_ID:
             raise WitnessValidationError(
                 "SCHEMA_MISMATCH", f"unsupported witness schema {self.schema!r}"
-            )
-        if self.authority_effect != "none":
-            raise WitnessValidationError(
-                "AUTHORITY_EFFECT",
-                "witness observation cannot move authority "
-                f"(authority_effect={self.authority_effect!r}, must be 'none')",
             )
         if not self.receipt_digest.startswith("sha256:") or len(self.receipt_digest) != 71:
             raise WitnessValidationError(
@@ -171,7 +171,7 @@ def parse_observation(data: dict) -> ReceiptWitnessObservation:
                 "SIGNATURE_SHAPE", f"signature.{key} must be a string"
             )
 
-    for key in ("schema", "receipt_digest", "witness_node_id", "observed_at", "authority_effect"):
+    for key in ("schema", "receipt_digest", "witness_node_id", "observed_at"):
         if not isinstance(data[key], str):
             raise WitnessValidationError("SCHEMA_MISMATCH", f"{key} must be a string")
 
@@ -181,7 +181,6 @@ def parse_observation(data: dict) -> ReceiptWitnessObservation:
         observed_at=data["observed_at"],
         signature=Signature(**sig_data),
         schema=data["schema"],
-        authority_effect=data["authority_effect"],
     )
     observation.validate()
     return observation
@@ -215,10 +214,12 @@ def build_witness_set(observations: Iterable[ReceiptWitnessObservation]) -> dict
     # Derived summary only; primary observations remain independently addressable.
     # witness_count is a count of observations, never a verdict, admission, or
     # truth signal (truth-from-count is an explicit non-goal of this schema).
+    # No authority/admission-shaped field is added to this summary either —
+    # the same structural-absence invariant applies to derived views as to
+    # the primary observations.
     return {
         "receipt_digest": next(iter(receipt_digests)),
         "witness_count": len(rows),
         "witness_nodes": sorted({row.witness_node_id for row in rows}),
         "observation_digests": sorted(row.observation_digest() for row in rows),
-        "authority_effect": "none",
     }

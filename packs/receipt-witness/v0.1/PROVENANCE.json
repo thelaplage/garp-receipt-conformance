@@ -21,68 +21,68 @@
       "artifact": "fixtures/valid/witness_a.json",
       "role": "valid witness observation: node:witness-a observing the fixture receipt digest",
       "authored": true,
-      "sha256": "5b4f3006af0c66d79fd8be4a26fe9c80786ab4a25c3dbf09e7d68709c7952d87"
+      "sha256": "a74f9f4a63c4fe73a6afa3e45c6768aef6f88ae127242eae3132089b00b96612"
     },
     {
       "artifact": "fixtures/valid/witness_b.json",
       "role": "valid witness observation: node:witness-b observing the same digest, later",
       "authored": true,
-      "sha256": "15253397e64b79a233ca646d90106a18b1e0d9534110a52f10d3a8003a615a9d"
+      "sha256": "6276b48675819bb156b8af2d655f29cc989ace0582af5e7e918d88864b1e5d01"
     },
     {
       "artifact": "fixtures/valid/witness_c.json",
       "role": "valid witness observation: node:witness-c observing the same digest, later still",
       "authored": true,
-      "sha256": "f569f75d62d8e90dc103bd989f4c1418c9c81ff742167d37232d116f13ef8f90"
+      "sha256": "80350b692d2df717ae961f0b822d8e879b4f2f068e52e923611b9a77d8472503"
     },
     {
       "artifact": "fixtures/invalid/invalid_digest_format.json",
       "role": "forbidden fixture: malformed receipt_digest",
       "authored": true,
-      "sha256": "70f15cb3d9d7224c688900931461ba453d98f36e81fb864f8c7d8af2f1b59c30",
+      "sha256": "d08d37b38e619d7d47fd807e1c3372f70b5ea9952b4079ebe55de5b0cf428c3e",
       "rejected_by_pack_verifier": "DIGEST_FORMAT"
     },
     {
       "artifact": "fixtures/invalid/signature_incomplete.json",
       "role": "forbidden fixture: signature.value empty",
       "authored": true,
-      "sha256": "23e0654e1c38d692b86781efa6fc82d2e3ca30a7691915624c7ac5d20ad96406",
+      "sha256": "158bed2c82fb4ef6676845b7d690687abd662b77f458e39731099c6ffff52f0c",
       "rejected_by_pack_verifier": "SIGNATURE_INCOMPLETE"
     },
     {
       "artifact": "fixtures/invalid/authority_effect_violation.json",
-      "role": "forbidden fixture: authority_effect != 'none' (the required-invariant probe)",
+      "role": "forbidden fixture: authority_effect present at all (any presence of an authority-shaped field is rejected, regardless of value -- the structural-absence-invariant probe)",
       "authored": true,
       "sha256": "2198f44df4a7a067ec57e782cf2adc242103dd5978e125c132a13cd5791c2f88",
-      "rejected_by_pack_verifier": "AUTHORITY_EFFECT"
+      "rejected_by_pack_verifier": "ADDITIONAL_PROPERTIES"
     },
     {
       "artifact": "fixtures/invalid/witness_node_too_short.json",
       "role": "forbidden fixture: witness_node_id below schema minLength",
       "authored": true,
-      "sha256": "b5fd22c2365e8541edb82f600da79ea49e843b6723c555fefd0786107bc518ae",
+      "sha256": "561412094ab6e7fe9bcbde86dfc5f7f67ef3a26639411e91ee51dcbc21a72b61",
       "rejected_by_pack_verifier": "NODE_ID_TOO_SHORT"
     },
     {
       "artifact": "fixtures/invalid/additional_property_verdict.json",
       "role": "forbidden fixture: extra top-level 'verdict' field (additionalProperties probe)",
       "authored": true,
-      "sha256": "37a1e28a0570167091d384eaea01d7d5f47cc293c4ebc4a5a640f5d5a73de97a",
+      "sha256": "df1f0420e4a30f0b50ded499108b99839be13c849f4970a84cd434c3f8233d91",
       "rejected_by_pack_verifier": "ADDITIONAL_PROPERTIES"
     },
     {
       "artifact": "fixtures/invalid/observed_at_not_utc.json",
       "role": "forbidden fixture: observed_at missing required UTC 'Z' suffix",
       "authored": true,
-      "sha256": "8772463d6325ef7a1d1eb7ca408cf079fc9b40c204b967d799c5b6a6ac9679dd",
+      "sha256": "370615d1393134b3e23f6b12d27c08a73ee3c9430a406d1e147f72c787f149a6",
       "rejected_by_pack_verifier": "OBSERVED_AT_FORMAT"
     }
   ],
   "required_invariant": {
     "statement": "witnessed_bytes != valid_receipt != authorized_action != true_result != admitted_evidence",
     "enforced_by": [
-      "tools/receipt_witness.py: authority_effect hard-checked == 'none'",
-      "schemas/receipt-witness-observation.v0.1.json: authority_effect is a closed const 'none'; additionalProperties: false (no verdict/truth/admission field can be added)",
+      "tools/receipt_witness.py: no authority/admission/trust-shaped field (e.g. authority_effect) is defined anywhere on ReceiptWitnessObservation or the derived witness-set view; REQUIRED_TOP_LEVEL_FIELDS is the closed field set parse_observation accepts, so any attempt to inject such a field into untrusted input is rejected outright (ADDITIONAL_PROPERTIES), regardless of the value it carries",
+      "schemas/receipt-witness-observation.v0.1.json: no authority_effect (or similar) property is declared; additionalProperties: false (no verdict/truth/admission/authority field can be added)",
       "packs/receipt-witness/v0.1/tools/verify_witness.py: ObservationVerification carries fixed-False asserts_receipt_validity / asserts_action_authorization / asserts_factual_truth / asserts_admission fields"
     ]
   },

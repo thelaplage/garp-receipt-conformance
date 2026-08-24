@@ -102,8 +102,7 @@ def print_witness_set(paths: list[Path]) -> bool:
 
     print(
         f"WITNESS-SET  receipt_digest={derived['receipt_digest']}  "
-        f"witness_count={derived['witness_count']}  "
-        f"authority_effect={derived['authority_effect']}"
+        f"witness_count={derived['witness_count']}"
     )
     for node in derived["witness_nodes"]:
         print(f"  witness_node: {node}")

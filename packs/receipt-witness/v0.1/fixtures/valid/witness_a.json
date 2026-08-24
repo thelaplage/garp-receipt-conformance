@@ -7,6 +7,5 @@
     "algorithm": "ed25519",
     "key_id": "node:witness-a:key-1",
     "value": "7b5e6d5bf34cbfd338fb085a30619a455402f51c51d3a524e238c2c5826b354e"
-  },
-  "authority_effect": "none"
+  }
 }

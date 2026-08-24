@@ -127,8 +127,11 @@ python3 "$VERIFIER" --witness-set \
 diff -u "$set_a" "$set_b"
 diff -u "$PACK/expected/valid/witness_set.txt" "$set_a"
 grep -q '^WITNESS-SET.*witness_count=3' "$set_a"
-grep -q '^WITNESS-SET.*authority_effect=none' "$set_a"
-pass "derived witness-set view is deterministic, order-independent, witness_count=3, authority_effect=none"
+if grep -q 'authority_effect' "$set_a"; then
+    printf 'ERROR: witness-set output must not contain authority_effect (structural absence required)\n' >&2
+    exit 1
+fi
+pass "derived witness-set view is deterministic, order-independent, witness_count=3, no authority_effect field emitted"
 
 # --- 6. repo-level regression script still passes ---------------------------
 

@@ -59,11 +59,16 @@ different, independently-established claims that this pack never conflates:
   `tools/validate_srs_envelope.py` at the repo root, against a *different*
   schema. A witness can observe bytes that later fail envelope validation;
   that is a fact this pack must be able to represent, not hide.
-- **authorized_action** — a claim this pack never makes. `authority_effect`
-  is hard-pinned to the literal `"none"` in both the schema
-  (`schemas/receipt-witness-observation.v0.1.json`) and the validator
-  (`tools/receipt_witness.py`); any observation asserting otherwise is
-  rejected (see `fixtures/invalid/authority_effect_violation.json`).
+- **authorized_action** — a claim this pack never makes. No
+  `authority_effect` (or any other authority/admission/trust-shaped) field
+  is defined anywhere in the schema
+  (`schemas/receipt-witness-observation.v0.1.json`) or the validator
+  (`tools/receipt_witness.py`). "No authority" is expressed by that field's
+  structural absence, not by a field pinned to a benign value: the schema's
+  `additionalProperties: false` and the validator's closed field set mean an
+  observation that tries to carry such a field is rejected outright,
+  regardless of the value it carries (see
+  `fixtures/invalid/authority_effect_violation.json`).
 - **true_result / admitted_evidence** — claims this pack does not and cannot
   make. No field in the schema carries a verdict, a truth value, or an
   admission decision. The forbidden-field probe
@@ -130,8 +135,9 @@ Non-goals (explicit stop conditions)
   pack's checks, since only the *observation records* are conformance-tested.)
 - **No equivalence with Counterpedia admission authority.** Nothing in this
   pack's schema, validator, or fixtures grants, implies, or stands in for
-  admission. `authority_effect: "none"` is the explicit, checked assertion of
-  that boundary.
+  admission. No authority- or admission-shaped field exists on the object at
+  all; that structural absence, actively enforced by rejecting any attempt to
+  add one, is this boundary.
 
 Adapter seam (not implemented here)
 --------------------------------------

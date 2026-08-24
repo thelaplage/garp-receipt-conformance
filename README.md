@@ -109,11 +109,13 @@ truth.
   that a witness node observed exact receipt bytes (by digest) by a stated
   time, and nothing else. Enforces
   `witnessed_bytes != valid_receipt != authorized_action != true_result !=
-  admitted_evidence`: `authority_effect` is hard-pinned to `"none"`, the
-  schema is closed (`additionalProperties: false`, no verdict/truth/admission
-  field can be smuggled in), and the derived witness-set aggregation is
-  deterministic, order-independent, and never treated as truth-from-count. No
-  blockchain, consensus protocol, or global timestamp authority. Run:
+  admitted_evidence`: no authority-shaped field (e.g. `authority_effect`) is
+  defined on the object at all, the schema is closed
+  (`additionalProperties: false`, no verdict/truth/admission/authority field
+  can be smuggled in, regardless of the value it carries), and the derived
+  witness-set aggregation is deterministic, order-independent, and never
+  treated as truth-from-count. No blockchain, consensus protocol, or global
+  timestamp authority. Run:
   `bash packs/receipt-witness/v0.1/check.sh`.
 
 Repository roles
