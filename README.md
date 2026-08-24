@@ -105,6 +105,17 @@ truth.
   OpenAI, or Bedrock API is called, no credentials or env vars are read, and it
   makes no claim about any model output (verifies none). Run:
   `bash packs/bedrock-openai-audit/v0.1/check.sh`.
+- `packs/witness-market/v0.1/` — receipt verification/witness/storage/replay
+  capabilities as discoverable **market** capabilities, without truth or
+  authority effect. A `WitnessServiceOffer` (`receipt_verify` / `receipt_witness`
+  / `receipt_store` / `replay_verify`), a `WitnessRequest` binding that offer to
+  an exact receipt digest, and a `WitnessResult` referencing a native witness
+  artifact are built into an SRS envelope receipt and validated against the same
+  canonical schema. Enforces
+  `witness_offer_exists != witness_selected != receipt_observed != receipt_valid
+  != action_authorized != result_true` — witness count never substitutes for
+  verification or admission. Status: DRAFT, `AUTHORITY_MOVEMENT: 0`. Run:
+  `bash packs/witness-market/v0.1/check.sh`.
 
 Repository roles
 ----------------

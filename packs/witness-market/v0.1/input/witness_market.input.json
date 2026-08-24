@@ -1,0 +1,13 @@
+{
+  "market_schema": "witness-market/v0",
+  "provider_node_id": "node:witness-alpha",
+  "service_kind": "receipt_witness",
+  "profile_ref": "profile:srs-envelope-v0.1.0",
+  "guarantees": ["exact_bytes", "observed_at"],
+  "subject_receipt_digest": "sha256:5d5579730f2db5b70fd74bc1a2f501995816adb115ccf445d9a775e50b12f334",
+  "requested_service": "receipt_witness",
+  "native_artifact_ref": "witness-observation://node:witness-alpha/0001",
+  "result_status": "OBSERVED",
+  "issued_at": "2026-08-23T00:00:00Z",
+  "note": "Public-safe, vendor-neutral witness-market scenario. subject_receipt_digest is a SYNTHETIC placeholder digest (sha256 of the literal string 'witness-market-v0.1-synthetic-subject-receipt') standing in for the digest of some already-issued SRS receipt a market participant wants observed/verified/stored/replay-checked. This pack does not reference, mint, or vendor any actual receipt; it proves the market-transaction shape only. No provider identity, credential, or live network endpoint appears."
+}

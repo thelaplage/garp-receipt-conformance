@@ -1,0 +1,51 @@
+{
+  "note": "Provenance for the witness-market pack. Like packs/mcp-audit-trail/v0.1 and packs/bedrock-openai-audit/v0.1, the artifacts in THIS pack are authored in this repository: a public-safe, synthetic witness-market scenario (a WitnessServiceOffer, a WitnessRequest, and a WitnessResult from witness_market.py) and the SRS envelope receipt deterministically built from it. They are not copied from any private corpus or external repository. The subject_receipt_digest carried by the scenario is itself a SYNTHETIC placeholder digest, not a real receipt.",
+  "pack": "packs/witness-market/v0.1",
+  "authored_in_repo": true,
+  "public_safety": {
+    "private_corpus_used": false,
+    "live_credentials_used": false,
+    "network_calls": false,
+    "scanner_used": false,
+    "vendor_profile": "none",
+    "vendor_neutral": true,
+    "explicit_file_input_only": true
+  },
+  "validates_against": {
+    "schema": "schemas/srs-envelope/v0.1.0/srs-envelope.schema.json",
+    "schema_sha256": "e866eabf1cef537df6dc98f56f74021d8af585c94dc689f9fdd4ee97618d6b61",
+    "validator": "tools/validate_srs_envelope.py",
+    "note": "The canonical SRS envelope schema and validator are the artifacts already vendored/reconciled in this repo; this pack does not re-vendor or edit them."
+  },
+  "artifacts": [
+    {
+      "artifact": "input/witness_market.input.json",
+      "role": "explicit public-safe witness-market scenario input",
+      "authored": true,
+      "sha256": "33eb57c4af9878a22988982bcf9aba190fd21e142f1ea8d6d54da4603e688427"
+    },
+    {
+      "artifact": "fixtures/valid/witness_market.envelope.json",
+      "role": "generated/expected valid SRS envelope receipt",
+      "generated_by": "tools/build_receipt.py",
+      "generated_from": "input/witness_market.input.json",
+      "deterministic": true,
+      "sha256": "bcccde1e66674472d312403ce549da2b4a984e564c17eac6a5b04a5f4479c71c"
+    },
+    {
+      "artifact": "fixtures/invalid/top_level_status_verdict.json",
+      "role": "forbidden-drift fixture (hoists the witness result's status as a top-level verdict instead of leaving it under extensions.garp.body.result.status)",
+      "authored": true,
+      "rejected_by_canonical_validator": "TOP_LEVEL_BODY_VERDICT",
+      "sha256": "1970c09a456c38abf4002cbd619659d7853d3c09877d4b5be29e367b4823d0ad"
+    }
+  ],
+  "market_contracts": {
+    "module": "witness_market.py",
+    "location": "repository root",
+    "loaded_by": "tools/build_receipt.py and tools/check_invariant_guard.py via importlib file-path loading (no sys.path/cwd dependence)",
+    "authority_effect": "none",
+    "truth_effect": "none",
+    "rule": "witness_offer_exists != witness_selected != receipt_observed != receipt_valid != action_authorized != result_true; witness count never substitutes for verification or admission."
+  }
+}

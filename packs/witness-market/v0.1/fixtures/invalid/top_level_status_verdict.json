@@ -1,0 +1,71 @@
+{
+  "_invalid_reason": "top-level 'status' asserts the witness result as a verdict on the envelope; a witness-market transaction carries authority_effect=none/truth_effect=none precisely because witness_offer_exists != witness_selected != receipt_observed != receipt_valid != action_authorized != result_true, and the canonical envelope never carries a body-level or top-level verdict/status/disposition/decision/governance_state (see docs/BODY_KIND_EXTENSION_RULES.md and Option A, garp-ops PR #87 / garp-sdk PR #78)",
+  "artifact_classes_covered": [
+    "trace",
+    "provenance"
+  ],
+  "artifact_classes_excluded": [
+    "truth_verification",
+    "authorization_grant",
+    "admission_decision"
+  ],
+  "attestation_limits": [
+    "this receipt attests SRS envelope shape and input-byte integrity only",
+    "it does not assert that the subject receipt (subject_ref) is valid",
+    "it does not assert that any action described by the subject receipt was authorized",
+    "it does not assert that the witness observation/result is true",
+    "witness_offer_exists != witness_selected != receipt_observed != receipt_valid != action_authorized != result_true",
+    "witness count never substitutes for verification or admission"
+  ],
+  "boundary_type": "witness_market_boundary",
+  "extensions": {
+    "garp": {
+      "body": {
+        "artifact_hashes": {
+          "input/witness_market.input.json": "sha256:33eb57c4af9878a22988982bcf9aba190fd21e142f1ea8d6d54da4603e688427"
+        },
+        "body_kind": "witness_market_transaction",
+        "invariant_chain": [
+          "witness_offer_exists",
+          "witness_selected",
+          "receipt_observed",
+          "receipt_valid",
+          "action_authorized",
+          "result_true"
+        ],
+        "offer": {
+          "authority_effect": "none",
+          "guarantees": [
+            "exact_bytes",
+            "observed_at"
+          ],
+          "offer_id": "witness-service-offer:86dafbac7c98092c3ed0d6ce735c129c26cdb6762462c3e339dbc6d55d641ad1",
+          "profile_ref": "profile:srs-envelope-v0.1.0",
+          "provider_node_id": "node:witness-alpha",
+          "service_kind": "receipt_witness",
+          "truth_effect": "none"
+        },
+        "request": {
+          "receipt_digest": "sha256:5d5579730f2db5b70fd74bc1a2f501995816adb115ccf445d9a775e50b12f334",
+          "request_id": "witness-request:f755114789aed2dc14dda6dadca84143a340d34bd1ac62aba86f77e7ddc66715",
+          "requested_service": "receipt_witness",
+          "service_offer_id": "witness-service-offer:86dafbac7c98092c3ed0d6ce735c129c26cdb6762462c3e339dbc6d55d641ad1"
+        },
+        "result": {
+          "authority_effect": "none",
+          "native_artifact_ref": "witness-observation://node:witness-alpha/0001",
+          "request_id": "witness-request:f755114789aed2dc14dda6dadca84143a340d34bd1ac62aba86f77e7ddc66715",
+          "status": "OBSERVED",
+          "truth_effect": "none"
+        }
+      }
+    }
+  },
+  "issued_at": "2026-08-23T00:00:00Z",
+  "protocol_binding": "garp",
+  "receipt_id": "witness-market-invalid-top-level-status",
+  "receipt_type": "provenance",
+  "receipt_version": "srs.core.v5.1",
+  "status": "OBSERVED",
+  "subject_ref": "sha256:5d5579730f2db5b70fd74bc1a2f501995816adb115ccf445d9a775e50b12f334"
+}
