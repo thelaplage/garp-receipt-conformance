@@ -1,0 +1,2 @@
+FAIL  packs/receipt-witness/v0.1/fixtures/invalid/signature_incomplete.json  Invalid witness observation.
+        [SIGNATURE_INCOMPLETE] signature envelope is incomplete

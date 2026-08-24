@@ -1,0 +1,1 @@
+PASS  packs/receipt-witness/v0.1/fixtures/valid/witness_a.json  Valid witness observation: byte-observation only; asserts nothing about receipt validity, action authorization, factual truth, or admission.

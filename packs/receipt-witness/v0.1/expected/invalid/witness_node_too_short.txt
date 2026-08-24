@@ -1,0 +1,2 @@
+FAIL  packs/receipt-witness/v0.1/fixtures/invalid/witness_node_too_short.json  Invalid witness observation.
+        [NODE_ID_TOO_SHORT] invalid witness node id 'n' (minLength 3)

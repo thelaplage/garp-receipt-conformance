@@ -105,6 +105,16 @@ truth.
   OpenAI, or Bedrock API is called, no credentials or env vars are read, and it
   makes no claim about any model output (verifies none). Run:
   `bash packs/bedrock-openai-audit/v0.1/check.sh`.
+- `packs/receipt-witness/v0.1/` — `ReceiptWitnessObservation`: a signed claim
+  that a witness node observed exact receipt bytes (by digest) by a stated
+  time, and nothing else. Enforces
+  `witnessed_bytes != valid_receipt != authorized_action != true_result !=
+  admitted_evidence`: `authority_effect` is hard-pinned to `"none"`, the
+  schema is closed (`additionalProperties: false`, no verdict/truth/admission
+  field can be smuggled in), and the derived witness-set aggregation is
+  deterministic, order-independent, and never treated as truth-from-count. No
+  blockchain, consensus protocol, or global timestamp authority. Run:
+  `bash packs/receipt-witness/v0.1/check.sh`.
 
 Repository roles
 ----------------

@@ -1,0 +1,2 @@
+FAIL  packs/receipt-witness/v0.1/fixtures/invalid/invalid_digest_format.json  Invalid witness observation.
+        [DIGEST_FORMAT] invalid receipt digest 'sha256:deadbeef' (expected 'sha256:' + 64 lowercase hex chars)

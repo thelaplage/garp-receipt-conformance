@@ -1,0 +1,2 @@
+FAIL  packs/receipt-witness/v0.1/fixtures/invalid/authority_effect_violation.json  Invalid witness observation.
+        [AUTHORITY_EFFECT] witness observation cannot move authority (authority_effect='admit', must be 'none')

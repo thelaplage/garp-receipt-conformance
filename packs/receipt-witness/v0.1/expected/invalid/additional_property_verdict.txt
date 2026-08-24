@@ -1,0 +1,2 @@
+FAIL  packs/receipt-witness/v0.1/fixtures/invalid/additional_property_verdict.json  Invalid witness observation.
+        [ADDITIONAL_PROPERTIES] unexpected top-level field(s): ['verdict']

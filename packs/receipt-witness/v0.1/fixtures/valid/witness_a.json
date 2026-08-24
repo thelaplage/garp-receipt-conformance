@@ -1,0 +1,12 @@
+{
+  "schema": "receipt.witness_observation.v0_1",
+  "receipt_digest": "sha256:cd39fb5019b44fecda66b39fcc561ad4ba0449a519d633d51586d5156254c269",
+  "witness_node_id": "node:witness-a",
+  "observed_at": "2026-08-23T05:00:02Z",
+  "signature": {
+    "algorithm": "ed25519",
+    "key_id": "node:witness-a:key-1",
+    "value": "7b5e6d5bf34cbfd338fb085a30619a455402f51c51d3a524e238c2c5826b354e"
+  },
+  "authority_effect": "none"
+}

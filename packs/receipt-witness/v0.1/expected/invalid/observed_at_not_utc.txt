@@ -1,0 +1,2 @@
+FAIL  packs/receipt-witness/v0.1/fixtures/invalid/observed_at_not_utc.json  Invalid witness observation.
+        [OBSERVED_AT_FORMAT] observed_at '2026-08-23T05:00:22-04:00' must be UTC RFC3339 ('Z' suffix)
