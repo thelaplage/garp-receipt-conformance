@@ -1,0 +1,209 @@
+{
+  "note": "Provenance for the SAM execution-receipt pack (dispatch lane SAM-EXECUTION-RECEIPT0, DRAFT, AUTHORITY_MOVEMENT=0). This pack profiles a PORTABLE EXECUTION RECEIPT for one remote MCP tool invocation carried over SAM, the first transport adapter this shape is proven for. It does not invent a new receipt family: it extends the existing canonical, closed-enum sdk_enforcement receipt_type with a new GARP body_kind (sam_execution_receipt) carried under extensions.garp.body, following the same explicit-file-input, deterministic-adapter, portable-standalone-verifier shape already proven by packs/mcp-audit-trail/v0.1/ and packs/bedrock-openai-audit/v0.1/. All artifacts here are authored in this repository: public-safe, SYNTHETIC SAM execution-observation inputs and the SRS envelope receipts deterministically built from them. They are not copied from any private corpus or external repository, and no live SAM/DAGR-MCP transport was run to produce them.",
+  "pack": "packs/sam-execution-receipt/v0.1",
+  "dispatch_lane": "SAM-EXECUTION-RECEIPT0",
+  "extends": {
+    "canonical_family_reused": "sdk_enforcement (closed receipt_type enum value already declared by schemas/srs-envelope/v0.1.0/srs-envelope.schema.json)",
+    "shape_reused": [
+      "canonical SRS envelope schema (no re-vendor, no edit)",
+      "no top-level receipt_class",
+      "receipt_type as the family axis (sdk_enforcement)",
+      "boundary_type as the top-level routing axis (sdk_enforcement_boundary, pack-local descriptive; first pack to route on the value already seeded in fixtures/valid/sdk_enforcement.minimal.json)",
+      "GARP body under extensions.garp.body, named by body_kind (sam_execution_receipt)",
+      "Option A / decision_ref discipline, extended to delegation_ref for parent/lineage references",
+      "deterministic file-in/file-out adapter, stdlib only",
+      "portable standalone verifier + parity guard test shape"
+    ],
+    "new_in_this_pack": [
+      "execution_outcome closed enum (success / refused / transport_failure / contaminated_response)",
+      "pack-local SAM standing-injection guardrail layered on top of (not replacing) the canonical envelope validator, because the canonical validator's BODY_VERDICT_KEYS list does not cover 'verified'/'published' at the top level and never inspects extensions.garp.body at all",
+      "deterministic, reordering-stable receipt identity digest (sha256 of sort_keys canonical serialization)",
+      "cryptographic cross-check of canonical_arguments_digest / returned_payload_digest / error_observation_digest against the explicit input file, independent of the whole-file artifact_hashes binding"
+    ],
+    "does_not_claim": "canonical authority to define boundary_type or to close the receipt_type enum; both remain arcs-srs's to define upstream. See docs/BOUNDARY_TYPE_LEDGER.md."
+  },
+  "authored_in_repo": true,
+  "not_a_live_integration": {
+    "live_sam_transport": false,
+    "live_dagr_mcp": false,
+    "credentials_used": false,
+    "env_vars_used": false,
+    "network_calls": false,
+    "note": "A repo-wide search (this repo and every sibling GARP/ARCS/DAGR repo present on disk at authoring time) found no live 'SAM' transport implementation. Every input file in this pack is an explicit, public-safe, SYNTHETIC projection of what such a transport's observations would contain; transport_adapter.source_revision is carried as the literal fixture-declared value 'unavailable' rather than pinned to any real commit, because no real commit exists to pin to. This is the same explicit-file-only discipline already established by packs/mcp-audit-trail/v0.1/ and packs/bedrock-openai-audit/v0.1/, not a shortfall specific to this pack."
+  },
+  "public_safety": {
+    "private_corpus_used": false,
+    "live_credentials_used": false,
+    "network_calls": false,
+    "scanner_used": false,
+    "vendor_profile": "none (generic MCP tool/service refs; no real account, session, or credential identifier)",
+    "synthetic": true,
+    "explicit_file_input_only": true
+  },
+  "validates_against": {
+    "schema": "schemas/srs-envelope/v0.1.0/srs-envelope.schema.json",
+    "schema_sha256": "e866eabf1cef537df6dc98f56f74021d8af585c94dc689f9fdd4ee97618d6b61",
+    "validator": "tools/validate_srs_envelope.py",
+    "note": "The canonical SRS envelope schema and validator are the artifacts already vendored/reconciled in this repo; this pack does not re-vendor or edit them. Its own SAM-specific guardrails are layered on top in tools/verify_standalone.py, not inside the canonical validator."
+  },
+  "boundary_type": {
+    "value": "sdk_enforcement_boundary",
+    "status": "pack-local descriptive routing label; first pack to route on this value (previously only illustrated by the un-packed root fixture fixtures/valid/sdk_enforcement.minimal.json)",
+    "canonical": false,
+    "note": "Not a newly-minted canonical boundary_type. The canonical boundary_type lane remains arcs-srs's to define. Added to docs/BOUNDARY_TYPE_LEDGER.md by this lane."
+  },
+  "artifacts": [
+    {
+      "artifact": "input/sam_execution_success.input.json",
+      "role": "explicit public-safe synthetic SAM execution observation: successful invocation",
+      "authored": true,
+      "sha256": "49e05f734593acee5f6fec7157841c3553b6d2ab7e15c1ddfc32727d3f797b9e"
+    },
+    {
+      "artifact": "input/sam_execution_refused.input.json",
+      "role": "explicit public-safe synthetic SAM execution observation: policy refusal before execution",
+      "authored": true,
+      "sha256": "25d63b11cf0922b529df1798d7ac5c68f5bb9b82f84cdbff754267b2ee8bfd10"
+    },
+    {
+      "artifact": "input/sam_execution_transport_failure.input.json",
+      "role": "explicit public-safe synthetic SAM execution observation: admitted call, transport never returned a response",
+      "authored": true,
+      "sha256": "17ee9a8e5d3f543262c252ad1094b7c451fea5c90c2eede45f1ba580563b2212"
+    },
+    {
+      "artifact": "input/sam_execution_contaminated.input.json",
+      "role": "explicit public-safe synthetic SAM execution observation: response frame failed transport integrity checking; also carries one intentionally-unrecognized field to prove the adapter does not let unknown fields silently acquire meaning",
+      "authored": true,
+      "sha256": "4f5f55df2983736090b2e73ea72ec864b48f6048a93c7deef54ee40fc727885e"
+    },
+    {
+      "artifact": "fixtures/valid/sam_execution_success.envelope.json",
+      "role": "generated/expected valid SRS envelope receipt: success",
+      "generated_by": "tools/build_receipt.py",
+      "generated_from": "input/sam_execution_success.input.json",
+      "deterministic": true,
+      "sha256": "a076329528a44fbe07e81950426da7f6a8a19d51c6643737ee0b96a525f69dd1"
+    },
+    {
+      "artifact": "fixtures/valid/sam_execution_refused.envelope.json",
+      "role": "generated/expected valid SRS envelope receipt: refused (valid non-success receipt, not a fake success)",
+      "generated_by": "tools/build_receipt.py",
+      "generated_from": "input/sam_execution_refused.input.json",
+      "deterministic": true,
+      "sha256": "ddc659aef7977901c282cce1940efe118b5ff08bb2f75ede84f3f4052a917235"
+    },
+    {
+      "artifact": "fixtures/valid/sam_execution_transport_failure.envelope.json",
+      "role": "generated/expected valid SRS envelope receipt: transport_failure (valid non-success receipt, not a fake success)",
+      "generated_by": "tools/build_receipt.py",
+      "generated_from": "input/sam_execution_transport_failure.input.json",
+      "deterministic": true,
+      "sha256": "1492ec4b01307d14355e1d62aa2e2cd97d03461d1e047aedf281157d6eb77c4d"
+    },
+    {
+      "artifact": "fixtures/valid/sam_execution_contaminated.envelope.json",
+      "role": "generated/expected valid SRS envelope receipt: contaminated_response (returned_payload_digest stays explicit 'unavailable'; suspect bytes are pointed to only via a forensic digest, never promoted to a trusted payload)",
+      "generated_by": "tools/build_receipt.py",
+      "generated_from": "input/sam_execution_contaminated.input.json",
+      "deterministic": true,
+      "sha256": "ce0c3229eab7fa1489421ea10c315dc0667e80659bcc0920adaac57e3308a802"
+    },
+    {
+      "artifact": "fixtures/invalid/top_level_status_verdict.json",
+      "role": "canonical-drift fixture (hoists a verdict onto the envelope as top-level 'status'); same drift class every other pack in this repo demonstrates",
+      "authored": true,
+      "rejected_by_canonical_validator": "TOP_LEVEL_BODY_VERDICT",
+      "sha256": "27846f08d6b253e89e1374ed257a82ab8f93298f524fe166235a04439515bcb4"
+    },
+    {
+      "artifact": "fixtures/invalid/top_level_verified_true.json",
+      "role": "standing-injection fixture: top-level verified=true. PASSES the canonical envelope validator (verified is not in its guardrail key list); REJECTED by the pack-local SAM guardrail",
+      "authored": true,
+      "rejected_by_canonical_validator": null,
+      "rejected_by_sam_guardrail": "STANDING_INJECTION_TOP_LEVEL",
+      "sha256": "57ee3d4097dece2b5de9e989dbf16fc03816b3888344034c4278d4084f5414f3"
+    },
+    {
+      "artifact": "fixtures/invalid/top_level_published_true.json",
+      "role": "standing-injection fixture: top-level published=true. PASSES the canonical envelope validator; REJECTED by the pack-local SAM guardrail",
+      "authored": true,
+      "rejected_by_canonical_validator": null,
+      "rejected_by_sam_guardrail": "STANDING_INJECTION_TOP_LEVEL",
+      "sha256": "41b9d9f530e2d380c58bd70efe3e5e615e673100dc6abe044be7fbd1b0e0bfce"
+    },
+    {
+      "artifact": "fixtures/invalid/body_admitted_true.json",
+      "role": "standing-injection fixture: extensions.garp.body.admitted=true. PASSES the canonical envelope validator (body-nested, never inspected); REJECTED by the pack-local SAM guardrail",
+      "authored": true,
+      "rejected_by_canonical_validator": null,
+      "rejected_by_sam_guardrail": "BODY_STANDING_INJECTION",
+      "sha256": "ebd86a4c160770915c98eb44c12fbad05d77a370597db74cad07fd0862d2f790"
+    },
+    {
+      "artifact": "fixtures/invalid/body_authority_grant.json",
+      "role": "standing-injection fixture: extensions.garp.body.delegated_scope='full_access' (a grant, not a reference). PASSES the canonical envelope validator; REJECTED by the pack-local SAM guardrail",
+      "authored": true,
+      "rejected_by_canonical_validator": null,
+      "rejected_by_sam_guardrail": "BODY_AUTHORITY_GRANT_INJECTION",
+      "sha256": "ba2a512aa360275f8c646977988cbfc396fa71548743c8ec28c7ca7a762064bd"
+    },
+    {
+      "artifact": "fixtures/invalid/body_evidence_support_injection.json",
+      "role": "standing-injection fixture: extensions.garp.body.output_evidence_supported=true (unlicensed evidentiary standing). PASSES the canonical envelope validator; REJECTED by the pack-local SAM guardrail",
+      "authored": true,
+      "rejected_by_canonical_validator": null,
+      "rejected_by_sam_guardrail": "BODY_STANDING_INJECTION",
+      "sha256": "c4a806c09a417ec147946b46fba0d35f19603c3702756e7246d9b6fe843c560c"
+    }
+  ],
+  "standalone_verifier_arc": {
+    "artifact": "tools/verify_standalone.py",
+    "claim": "A prospect can run the verifier offline from receipt bytes, the explicit SAM observation input bytes, this single stdlib-only script, and the schema assets already in this repo: no garp-local checkout, no install, no network, no credentials, no env vars, no API calls, no scanner, no service access, no live SAM/DAGR-MCP process.",
+    "stdlib_only": true,
+    "imports_product_code": false,
+    "checks": [
+      "receipt parses",
+      "canonical schema bytes match the manifest's pinned sha256",
+      "deterministic, reordering-stable receipt identity (sha256 of sort_keys canonical serialization)",
+      "canonical SRS envelope invariants hold (same checks as tools/validate_srs_envelope.py)",
+      "SAM standing-injection guardrails hold (top-level verified/published; body-level admitted/refused/action_authorized/output_evidence_supported/evidence_supported; body-level delegated_scope/authority_grant/scope_grant)",
+      "receipt_type/body_kind route expectations hold, and a non-success execution_outcome never carries a fabricated returned_payload_digest",
+      "artifact_hashes and the receipt's own canonical_arguments_digest/returned_payload_digest/error_observation_digest match the explicit input file"
+    ],
+    "non_divergence": {
+      "vendored_from": "tools/validate_srs_envelope.py",
+      "guard": "tools/test_verify_standalone.py runs both the standalone verifier and the canonical validator over every fixture in this pack and fails if their envelope verdicts disagree; there is no second divergent envelope verifier.",
+      "note": "Envelope-validation logic is vendored into the single portable artifact; the SAM-specific standing-injection guardrail is additional, pack-local logic layered on top -- it does not modify or replace the canonical checks."
+    },
+    "verification_scope": "structural + cryptographic only",
+    "does_not_claim": [
+      "action_authorized",
+      "output_true",
+      "output_evidence_supported",
+      "admitted",
+      "published",
+      "live SAM/DAGR-MCP transport integration"
+    ],
+    "boundary_type_routing": "The standalone verifier does NOT route on boundary_type; route authority is receipt_type/body_kind/execution_outcome/schema invariants."
+  },
+  "option_a_extended": {
+    "preserved": true,
+    "decision_ref_only": true,
+    "extended_to": "delegation_ref (parent/delegation/lineage references, same discipline: a reference only, never a grant)",
+    "recorded_by": [
+      "garp-ops PR #87 (R0/R1 Option A)",
+      "garp-sdk PR #78 (admission receipt contract conformed to Option A / decision_ref)"
+    ],
+    "rule": "Any decision/delegation/verdict semantics are carried only as a *_ref reference (decision_ref, delegation_ref); never as a body-level or top-level verdict/status/disposition/decision/governance_state/admitted/verified/published/delegated_scope/authority_grant."
+  },
+  "dispatch": {
+    "lane": "SAM-EXECUTION-RECEIPT0",
+    "status": "DRAFT",
+    "authority_movement": 0,
+    "stop_conditions_hit": false,
+    "unresolved_fields": [
+      "transport_adapter.source_revision: no live SAM implementation exists on disk to pin to; carried as the explicit literal 'unavailable' rather than fabricated"
+    ]
+  }
+}

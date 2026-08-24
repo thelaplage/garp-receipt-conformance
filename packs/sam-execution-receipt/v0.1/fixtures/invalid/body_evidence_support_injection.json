@@ -1,0 +1,58 @@
+{
+  "_invalid_reason": "injects extensions.garp.body.output_evidence_supported=true, an evidentiary standing claim this receipt shape never licenses (receipt_valid != output_evidence_supported); rejected by the pack-local guardrail (BODY_STANDING_INJECTION)",
+  "artifact_classes_covered": [
+    "trace",
+    "packet_inspection"
+  ],
+  "artifact_classes_excluded": [
+    "truth_verification",
+    "action_authorization",
+    "publication_eligibility",
+    "evidentiary_support_determination"
+  ],
+  "attestation_limits": [
+    "this receipt attests SRS envelope shape, SAM-execution-receipt guardrails, and input-byte integrity only",
+    "receipt_valid != action_authorized: a valid receipt does not establish that the invocation was authorized",
+    "receipt_valid != output_true: a valid receipt does not establish that any returned content is true",
+    "receipt_valid != output_evidence_supported: a valid receipt does not establish evidentiary standing for any returned content",
+    "receipt_valid != admitted: a valid receipt does not itself admit the invocation; any policy decision is carried only as decision_ref",
+    "receipt_valid != published: a valid receipt does not publish or make public any subject, artifact, or claim",
+    "a contaminated_response outcome records that returned bytes failed transport integrity checking; no digest of the suspect bytes is carried as a trusted returned_payload_digest, and no claim is made about their content",
+    "this is not a live transport integration: no SAM/DAGR-MCP process was run and no network was touched to build this receipt"
+  ],
+  "boundary_type": "sdk_enforcement_boundary",
+  "extensions": {
+    "garp": {
+      "body": {
+        "artifact_hashes": {
+          "input/sam_execution_success.input.json": "sha256:49e05f734593acee5f6fec7157841c3553b6d2ab7e15c1ddfc32727d3f797b9e"
+        },
+        "body_kind": "sam_execution_receipt",
+        "caller_ref": "principal:agent-fixture-0001",
+        "canonical_arguments_digest": "sha256:b5be2cadd2caa5153dfde9150eb63d5d4cc21ae117041f76a82028843e4a45ed",
+        "decision_ref": "policy-eval://sam-transport/sam-inv-fixture-0001#decision-0001",
+        "delegation_ref": "delegation://parent-invocation/sam-inv-fixture-parent-0000#lineage-0001",
+        "execution_outcome": "success",
+        "execution_receipt_schema_version": "sam-execution-receipt/v0.1",
+        "invocation_id": "sam-inv-fixture-0001",
+        "mcp_tool_ref": "reporting.generate_summary",
+        "output_evidence_supported": true,
+        "requested_at": "2026-06-10T12:00:00Z",
+        "returned_payload_digest": "sha256:c4ece2fd18a516c99fc432044e74b2e2076cc5da0c42921b7a6cd2ac254d5455",
+        "target_ref": "mcp-server:reporting",
+        "transport_adapter": {
+          "adapter_id": "sam",
+          "source_revision": "unavailable"
+        },
+        "transport_session_ref": "sam-session://transport/sam/session-fixture-0001"
+      }
+    }
+  },
+  "issued_at": "2026-06-10T12:00:01Z",
+  "protocol_binding": "garp",
+  "receipt_id": "sam-execution-receipt-success-49e05f734593acee",
+  "receipt_type": "sdk_enforcement",
+  "receipt_version": "srs.core.v5.1",
+  "retention_class_applied": "hash_only",
+  "subject_ref": "sam-inv-fixture-0001"
+}

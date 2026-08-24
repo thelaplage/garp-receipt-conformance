@@ -1,0 +1,21 @@
+{
+  "sam_observation_schema": "sam.execution-observation/v0",
+  "invocation_id": "sam-inv-fixture-0002",
+  "caller_ref": "principal:agent-fixture-0002",
+  "service_ref": "mcp-server:reporting",
+  "mcp_tool_ref": "reporting.export_records",
+  "requested_at": "2026-06-10T12:05:00Z",
+  "issued_at": "2026-06-10T12:05:01Z",
+  "transport_session_ref": "sam-session://transport/sam/session-fixture-0002",
+  "transport_adapter": {
+    "adapter_id": "sam",
+    "source_revision": "unavailable"
+  },
+  "decision_ref": "policy-eval://sam-transport/sam-inv-fixture-0002#decision-0002",
+  "canonical_arguments_digest": "sha256:a8bd081308859db854e22cf524948c33d4f2e84adf3c4a0a2964c5c26cbee6dd",
+  "execution_outcome": "refused",
+  "returned_payload_digest": "unavailable",
+  "error_code": "POLICY_REFUSED",
+  "error_observation_digest": "sha256:7e358c036b8dee4c95a18bcd38867b9d1cf981112f9b922fd92a9b06698c78a5",
+  "note": "Public-safe, SYNTHETIC SAM (transport-adapter) execution observation for one governed MCP tool invocation that the upstream policy decision refused before any execution occurred. This is NOT a live transport capture. The refusal reason is carried digest-only (error_observation_digest), never as raw refusal text, and returned_payload_digest is explicit 'unavailable' because no payload was ever produced. A refusal is a valid, non-success receipt; it is never rewritten as a fake success."
+}

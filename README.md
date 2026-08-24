@@ -105,6 +105,19 @@ truth.
   OpenAI, or Bedrock API is called, no credentials or env vars are read, and it
   makes no claim about any model output (verifies none). Run:
   `bash packs/bedrock-openai-audit/v0.1/check.sh`.
+- `packs/sam-execution-receipt/v0.1/` — **DRAFT** (dispatch lane
+  SAM-EXECUTION-RECEIPT0, `AUTHORITY_MOVEMENT = 0`). A **portable execution
+  receipt** for one remote MCP tool invocation carried over SAM, the first
+  transport adapter this shape is proven for. It **extends** the existing
+  closed-enum `sdk_enforcement` receipt_type with a new GARP body_kind
+  (`sam_execution_receipt`) rather than inventing a new receipt family, adds a
+  pack-local standing-injection guardrail (rejecting `verified`/`published`/
+  `admitted`/authority-grant/evidence-support injection that the canonical
+  envelope validator alone cannot catch for this body_kind), and computes a
+  deterministic, reordering-stable receipt identity digest. It is **not** a
+  live integration: no SAM/DAGR-MCP process is run. See
+  `docs/SAM_EXECUTION_RECEIPT_V0_1.md` for the full schema and
+  canonicalization rules. Run: `bash packs/sam-execution-receipt/v0.1/check.sh`.
 
 Repository roles
 ----------------

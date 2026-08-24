@@ -1,0 +1,22 @@
+{
+  "sam_observation_schema": "sam.execution-observation/v0",
+  "invocation_id": "sam-inv-fixture-0001",
+  "caller_ref": "principal:agent-fixture-0001",
+  "service_ref": "mcp-server:reporting",
+  "mcp_tool_ref": "reporting.generate_summary",
+  "requested_at": "2026-06-10T12:00:00Z",
+  "issued_at": "2026-06-10T12:00:01Z",
+  "transport_session_ref": "sam-session://transport/sam/session-fixture-0001",
+  "transport_adapter": {
+    "adapter_id": "sam",
+    "source_revision": "unavailable"
+  },
+  "decision_ref": "policy-eval://sam-transport/sam-inv-fixture-0001#decision-0001",
+  "delegation_ref": "delegation://parent-invocation/sam-inv-fixture-parent-0000#lineage-0001",
+  "canonical_arguments_digest": "sha256:b5be2cadd2caa5153dfde9150eb63d5d4cc21ae117041f76a82028843e4a45ed",
+  "execution_outcome": "success",
+  "returned_payload_digest": "sha256:c4ece2fd18a516c99fc432044e74b2e2076cc5da0c42921b7a6cd2ac254d5455",
+  "error_code": null,
+  "error_observation_digest": null,
+  "note": "Public-safe, SYNTHETIC SAM (transport-adapter) execution observation for one governed MCP tool invocation that completed successfully. This is NOT a live transport capture: no real SAM/DAGR-MCP process was run, no account/session/credential identifier appears, and arguments/payload are recorded digest-only (never raw). The receipt built from this file binds it by sha256 and asserts SRS envelope form plus SAM-execution-receipt guardrails only; it does not assert that the call was authorized, that its output is true or evidence-supported, or that anything here is admitted or published."
+}

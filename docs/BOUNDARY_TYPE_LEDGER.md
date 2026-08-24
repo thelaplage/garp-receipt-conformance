@@ -67,6 +67,26 @@ Ledger
   inventing a per-vendor routing value: a custody/audit trail routes the same way
   the neutral audit trail does, so it carries the same descriptive value.
 
+### `sdk_enforcement_boundary`
+
+- **classification:** pack-local descriptive
+- **canonical_status:** not canonical
+- **route_authority:** the verifier does **not** route on this value; the
+  verifier routes on `receipt_type` / `body_kind` / `execution_outcome` /
+  schema invariants. `boundary_type` is descriptive top-level context.
+- **used_by:**
+  - `packs/sam-execution-receipt/v0.1/`
+- **source:** dispatch lane `SAM-EXECUTION-RECEIPT0` (DRAFT,
+  `AUTHORITY_MOVEMENT = 0`). The value itself was already present as the
+  illustrative `boundary_type` in the un-packed root fixture
+  `fixtures/valid/sdk_enforcement.minimal.json`; this pack is the first to
+  actually route a receipt-bearing pack on it.
+- **notes:** paired with `receipt_type: "sdk_enforcement"`, the existing
+  closed-enum family for SDK/transport-binding enforcement decisions over a
+  tool call. Chosen because a portable execution receipt for one MCP tool
+  invocation is exactly that kind of decision, extended to a new transport
+  adapter (SAM) rather than a new receipt family.
+
 Rule for future packs
 ---------------------
 

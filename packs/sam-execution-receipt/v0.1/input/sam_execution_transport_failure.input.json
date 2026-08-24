@@ -1,0 +1,21 @@
+{
+  "sam_observation_schema": "sam.execution-observation/v0",
+  "invocation_id": "sam-inv-fixture-0003",
+  "caller_ref": "principal:agent-fixture-0003",
+  "service_ref": "mcp-server:reporting",
+  "mcp_tool_ref": "reporting.generate_summary",
+  "requested_at": "2026-06-10T12:10:00Z",
+  "issued_at": "2026-06-10T12:10:05Z",
+  "transport_session_ref": "sam-session://transport/sam/session-fixture-0003",
+  "transport_adapter": {
+    "adapter_id": "sam",
+    "source_revision": "unavailable"
+  },
+  "decision_ref": "policy-eval://sam-transport/sam-inv-fixture-0003#decision-0003",
+  "canonical_arguments_digest": "sha256:0d98d99e83bb8b58fbffc270f8adfc2c34b2625216ec78fc92b464af6e3b4895",
+  "execution_outcome": "transport_failure",
+  "returned_payload_digest": "unavailable",
+  "error_code": "TRANSPORT_TIMEOUT",
+  "error_observation_digest": null,
+  "note": "Public-safe, SYNTHETIC SAM (transport-adapter) execution observation for one governed MCP tool invocation that was admitted by policy but never received a transport response (session timed out before any response frame arrived). This is NOT a live transport capture. Because no bytes were ever observed, error_observation_digest is explicit null rather than a fabricated digest, and returned_payload_digest is explicit 'unavailable'. A transport failure is a valid, non-success receipt; the prior admission decision (decision_ref) is not treated as evidence the call executed."
+}
